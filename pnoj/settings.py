@@ -25,7 +25,7 @@ SECRET_KEY = 'e5yt3ca$42*g$d-=1d%hj*k@d+*_)oxjd9m2&+!@230=(^4le0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'judge',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Miscellaneous settings
+
+AUTH_USER_MODEL = 'pnoj.User'
