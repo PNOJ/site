@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
+class User(AbstractUser):
+    pass
+
 class Problem(models.Model):
     author = models.ForeignKey(User, on_delete=models.PROTECT)
     title = models.CharField(max_length=75)
@@ -16,14 +19,14 @@ class Testcase(models.Model):
     author = models.ForeignKey(User, on_delete=models.PROTECT)
     problem = models.ForeignKey(Problem, on_delete=models.PROTECT)
     created_date = models.DateTimeField(auto_now_add=True)
-    last_modified_date = mode.DateTimeField(auto_now=True)
-    id = models.CharField(max_length=10)
+    last_modified_date = models.DateTimeField(auto_now=True)
+    testcase_id = models.CharField(max_length=10)
     points = models.PositiveSmallIntegerField()
     testcase_input = models.TextField()
     testcase_output = models.TextField()
 
 class Submission(models.Model):
-    created_date = model.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.PROTECT)
     problem = models.ForeignKey(Problem, on_delete=models.PROTECT)
     valid = models.BooleanField(default=True)
@@ -43,7 +46,4 @@ class TestcaseResult(models.Model):
         max_length=5,
         choices=status_codes,
     )
-    submission = models.ForeignKey(Submission, on_delete.models.PROTECT)
-
-class User(AbstractUser):
-    pass
+    submission = models.ForeignKey(Submission, on_delete=models.PROTECT)

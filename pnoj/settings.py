@@ -122,4 +122,4 @@ STATIC_URL = '/static/'
 
 # Miscellaneous settings
 
-AUTH_USER_MODEL = 'pnoj.User'
+AUTH_USER_MODEL = 'judge.User'
