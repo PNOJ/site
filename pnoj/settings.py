@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'judge',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +119,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# =========================
+
+languages = [
+    {
+        'code': 'py3',
+        'name': 'Python 3',
+        'docker_image': 'docker.pkg.github.com/pnoj/judge/python3:latest'
+    }
+]
