@@ -6,8 +6,8 @@ User = get_user_model()
 
 class RegisterForm(UserCreationForm):
     username = forms.CharField(label="Your Username")
-    password1 = forms.CharField(label="Your Password")
-    password2 = forms.CharField(label="Repeat Your Password")
+    password1 = forms.CharField(label="Your Password", widget=forms.PasswordInput())
+    password2 = forms.CharField(label="Repeat Your Password", widget=forms.PasswordInput())
     email = forms.EmailField(label = "Email Address")
  
     class Meta:
