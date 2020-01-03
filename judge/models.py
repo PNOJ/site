@@ -1,11 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 import pytz
 import random
 import pnoj.settings as settings
-
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
@@ -20,9 +19,8 @@ status_choices = [
     ('AB', 'Aborted'),
 ]
 
-class Programmer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64)
+class User(AbstractUser):
+    email = models.EmailField(unique=True)
     description = models.TextField(blank=True)
 
     timezone_choices = [(i, i) for i in pytz.common_timezones]
@@ -37,8 +35,8 @@ class Programmer(models.Model):
 
 
 class Organization(models.Model):
-    creator = models.ForeignKey(Programmer, on_delete=models.PROTECT, related_name="organizations_owning")
-    admins = models.ManyToManyField('Programmer', related_name="organizations_maintaining")
+    creator = models.ForeignKey(User, on_delete=models.PROTECT, related_name="organizations_owning")
+    admins = models.ManyToManyField('User', related_name="organizations_maintaining")
     name = models.CharField(max_length=64)
     description = models.TextField(blank=True)
     slug = models.SlugField(unique=True)
@@ -63,8 +61,8 @@ class Problem(models.Model):
     manifest_file = models.FileField()
     description_file = models.FileField()
 
-    owner = models.ForeignKey(Programmer, on_delete=models.SET_NULL, null=True, blank=True, related_name="problems_owning")
-    maintainers = models.ManyToManyField(Programmer, related_name="problems_maintaining")
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="problems_owning")
+    maintainers = models.ManyToManyField(User, related_name="problems_maintaining")
     name = models.CharField(max_length=128)
     description = models.TextField()
     slug = models.SlugField(unique=True)
@@ -77,7 +75,7 @@ class Problem(models.Model):
     problem_type = models.ManyToManyField(ProblemType)
 
 class Submission(models.Model):
-    author = models.ForeignKey(Programmer, on_delete=models.SET_NULL, null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True)
@@ -125,7 +123,7 @@ class Comment(models.Model):
     parent_object_id = models.PositiveIntegerField()
     parent = GenericForeignKey('parent_content_type', 'parent_object_id')
 
-    author = models.ForeignKey(Programmer, on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
     text = models.TextField()

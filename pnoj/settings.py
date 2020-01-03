@@ -120,12 +120,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# =========================
+AUTH_USER_MODEL = 'judge.User'
+
+# ========================
 
 languages = [
     {
         'code': 'py3',
-        'name': 'Python 3',
+        'name': 'Python3',
         'docker_image': 'docker.pkg.github.com/pnoj/judge/python3:latest'
     }
 ]
