@@ -127,3 +127,11 @@ class Comment(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     text = models.TextField()
+
+class SidebarItem(models.Model):
+    name = models.CharField(max_length=24)
+    view = models.CharField(max_length=36)
+    order = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.name

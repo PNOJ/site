@@ -1,5 +1,6 @@
 from django.contrib import admin, auth
 from django.contrib.auth import get_user_model
+from . import models
 
 User = get_user_model()
 
@@ -12,6 +13,7 @@ User = get_user_model()
 # admin_site = PNOJAdminSite()
 
 admin.site.register(User)
+admin.site.register(models.SidebarItem)
 admin.site.site_header = "PNOJ administration"
 admin.site.site_title = "PNOJ admin"
 # admin_site.register(auth.models.Group)

@@ -1,0 +1,85 @@
+{% load static %}
+{% load gravatar_tags %}
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Dashboard Template · Bootstrap</title>
+
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        </style>
+        <!-- Custom styles for this template -->
+        <link href="{% static 'styles/base.css' %}" rel="stylesheet">
+    </head>
+    <body>
+
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column">
+                            {% for item in sidebar_items %}
+                            <li class="nav-item">
+                                {% if item.view == request.resolver_match.view_name %}
+                                <a class="nav-link active" href="{% url item.view %}">
+                                {% else %}
+                                <a class="nav-link" href="{% url item.view %}">
+                                {% endif %}
+                                    {{ item.name }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </nav>
+
+                <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                    {% block main %}
+                    {% endblock %}
+                </main>
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-bottom bg-dark flex-md-nowrap p-0">
+            <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">
+                <div class="text-center">
+                    <img src="{% static 'logos/inverted-long.png' %}" height="30" alt="Inverted long PNOJ logo">
+                </div>
+            </a>
+
+            <div class="collapse flex-row-reverse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav flex-row-reverse px-3">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropup">
+                        <a class="nav-link dropdown-toggle" href="#" id="profile-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="{{ user.email|gravatar_url:30 }}" alt="User profile picture" class="img-thumbnail">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profile-dropdown">
+                            <a class="dropdown-item disabled" href="#" tabindex="-1" aria-disabled="true">Logged in as {{ user.username }}</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <div class="text-light">
+                            <a class="text-info" href="{% url 'login' %}">Log in</a> or <a class="text-info" href="{% url 'signup' %}">Sign up</a>
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </nav>
+
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    </body>
+</html>
+

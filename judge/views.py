@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import views as auth_views
 from django.views import View
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.edit import FormView
 from django.contrib.auth import get_user_model
@@ -11,8 +12,13 @@ from . import forms
 
 User = get_user_model()
 
-def index():
-    pass
+class Index(TemplateView):
+    template_name = 'judge/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
+        return context
 
 def profile():
     pass
