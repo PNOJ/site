@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load gravatar_tags %}
+{% load markdown_tags %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <div class="media">
+            <div class="media-body">
+                <h5 class="mt-0">{{ problem.name }}</h5>
+                {{ problem.description|markdown }}
+            </div>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Points: {{ problem.points }}</li>
+        <li class="list-group-item">Time limit: {{ problem.time_limit }}s</li>
+        <li class="list-group-item">Memory limit: {{ problem.memory_limit }}M</li>
+        <li class="list-group-item">Author: {{ problem.author.all|join:", " }}</li>
+        {% if problem.category.all %}
+        <li class="list-group-item">Category: {{ problem.category.all|join:", " }}</li>
+        {% endif %}
+        {% if problem.problem_type.all %}
+        <li class="list-group-item">Type: {{ problem.problem_type.all|join:", " }}</li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}

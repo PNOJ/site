@@ -123,3 +123,7 @@ body {
         font-size: 3.5rem;
     }
 }
+
+.mb-6 {
+  margin-bottom: 100px !important;
+}

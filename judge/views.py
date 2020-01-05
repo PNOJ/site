@@ -47,11 +47,28 @@ class UserCreate(View):
 
         return render(request, self.template_name, {'form': form})
 
-def problems_index():
-    pass
+class ProblemIndex(ListView):
+    model = models.Problem
+    context_object_name = 'problems'
+    template_name = 'judge/problem_index.html'
 
-def problem():
-    pass
+    def get_ordering(self):
+        return 'name'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
+        return context
+
+class Problem(DetailView):
+    model = models.Problem
+    context_object_name = 'problem'
+    template_name = "judge/problem.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
+        return context
 
 def problem_submit():
     pass

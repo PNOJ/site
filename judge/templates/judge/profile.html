@@ -2,27 +2,29 @@
 {% load gravatar_tags %}
 
 {% block main %}
-<div class="card-body">
-    <div class="media">
-        <img src="{{ profile.email|gravatar_url:200 }}" class="mr-3 img-thumbnail" alt="User's profile picture">
-        <div class="media-body">
-            <h5 class="mt-0">{{ profile.username }}</h5>
-            {% if profile.description == "" %}
-            <p class="font-italic">This user has not shared any information.</p>
-            {% else %}
-            {{ profile.description }}
-            {% endif %}
+<div class="card">
+    <div class="card-body">
+        <div class="media">
+            <img src="{{ profile.email|gravatar_url:200 }}" class="mr-3 img-thumbnail" alt="User's profile picture">
+            <div class="media-body">
+                <h5 class="mt-0">{{ profile.username }}</h5>
+                {% if profile.description == "" %}
+                <p class="font-italic">This user has not shared any information.</p>
+                {% else %}
+                {{ profile.description }}
+                {% endif %}
+            </div>
         </div>
     </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Cras justo odio</li>
+        <li class="list-group-item">Dapibus ac facilisis in</li>
+        <li class="list-group-item">Vestibulum at eros</li>
+    </ul>
+    {% if profile == user %}
+    <div class="card-body">
+        <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit profile</a>
+    </div>
+    {% endif %}
 </div>
-<ul class="list-group list-group-flush">
-    <li class="list-group-item">Cras justo odio</li>
-    <li class="list-group-item">Dapibus ac facilisis in</li>
-    <li class="list-group-item">Vestibulum at eros</li>
-</ul>
-{% if profile == user %}
-<div class="card-body">
-    <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit profile</a>
-</div>
-{% endif %}
 {% endblock %}

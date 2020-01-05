@@ -56,11 +56,14 @@ class Organization(models.Model):
     is_private = models.BooleanField(default=False)
 
 class Category(models.Model):
-    name = models.CharField(max_length=12)
+    name = models.CharField(max_length=30)
     description = models.TextField(blank=True)
     slug = models.SlugField(unique=True)
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return self.name
 
 class ProblemCategory(Category):
     pass
@@ -101,8 +104,8 @@ class Problem(models.Model):
 
             self.name = manifest_dict['name']
 
-            with z.open(manifest_dict['metadata']['description']) as description_file:
-                self.description = description_file.read()
+            with z.open(manifest_dict['metadata']['description'], "r") as description_file:
+                self.description = description_file.read().decode("utf-8").strip("\n")
 
             self.points = manifest_dict['metadata']['points']
             self.is_partial = manifest_dict['metadata']['partial']
@@ -116,11 +119,9 @@ class Problem(models.Model):
         self.author.set(authors)
 
         categories = ProblemCategory.objects.filter(name__in=manifest_dict['metadata']['category'])
-        self.category.set(categories)
+        self.category.set(list(categories))
         problem_types = ProblemType.objects.filter(name__in=manifest_dict['metadata']['type'])
         self.problem_type.set(problem_types)
-
-        super().save(*args, **kwargs)  # Call the "real" save() method.
 
 class Submission(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)

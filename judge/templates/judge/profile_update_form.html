@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 
 {% block main %}
-<div class="card-body">
-    <h5 class="card-title">Edit profile</h5>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_ul }}
-    </form>
-</div>
-<div class="card-body">
-    <button type="submit" class="btn btn-primary mr-2">Submit</button>
-    <a href="{% url 'user_profile' %}" class="btn btn-primary" role="button" aria-pressed="true">Cancel</a>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Edit profile</h5>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_ul }}
+        </form>
+    </div>
+    <div class="card-body">
+        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+        <a href="{% url 'user_profile' %}" class="btn btn-primary" role="button" aria-pressed="true">Cancel</a>
+    </div>
 </div>
 {% endblock %}
