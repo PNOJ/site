@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="card-body">
+    <h5 class="card-title">Users</h5>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Username</th>
+                <th scope="col">Points</th>
+                <th scope="col">Problems</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in users %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td><a href={% url 'profile' i.username %}>{{ i.username }}</a></td>
+                <td>{{ i.points }}</td>
+                <td>{{ i.num_problems_solved }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

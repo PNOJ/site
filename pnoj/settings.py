@@ -122,12 +122,14 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.abspath('../sitefiles/media')
+
 AUTH_USER_MODEL = 'judge.User'
 
 LOGOUT_REDIRECT_URL = "/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = '../emails'
+EMAIL_FILE_PATH = os.path.abspath('../sitefiles/emails')
 
 # ========================
 
