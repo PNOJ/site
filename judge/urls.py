@@ -18,5 +18,7 @@ urlpatterns = [
     path('accounts/profile/edit', views.ProfileUpdate.as_view(), name='profile_edit'),
     path('submissions/', views.SubmissionIndex.as_view(), name='submission_index'),
     path('submission/<int:pk>', views.Submission.as_view(), name='submission'),
+    path('comment/<int:pk>', views.Comment.as_view(), name='comment'),
+    path('<str:parent_type>/<slug:parent_id>/add_comment', views.add_comment, name='add_comment'),
 ]
 

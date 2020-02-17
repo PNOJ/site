@@ -1,117 +1,43 @@
+{% extends 'base.html' %}
 {% load static %}
 {% load gravatar_tags %}
 {% load link_tags %}
 {% load tz %}
+{% load humanize %}
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>{{ page_title }}</title>
-
-        <!-- Bootstrap core CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
-        </style>
-        <!-- Custom styles for this template -->
-        <link href="{% static 'styles/base.css' %}" rel="stylesheet">
-    </head>
-    <body>
-
-        <div class="container-fluid">
-            <div class="row">
-                <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-                    <div class="sidebar-sticky" id="navbar">
-                        <ul class="nav flex-column">
-                            {% for item in sidebar_items %}
-                            <li class="nav-item">
-                                {% if item.view == request.resolver_match.view_name %}
-                                <a class="nav-link active" href="{% url item.view %}">
-                                {% else %}
-                                <a class="nav-link" href="{% url item.view %}">
-                                {% endif %}
-                                    {{ item.name }}
-                                </a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </nav>
-
-                <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                    <div class="mb-3">
-                        {% block main %}
-                        {% endblock %}
-                    </div>
-                    <div class="mb-6">
-                        <ul class="list-group">
-                            {% for i in comments %}
-                            <li class="list-group-item">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1">{{ i.author.username|user }}</h5>
-                                    <small>commented on {{ i.created_on|localtime }}</small>
-                                </div>
-                                <p class="mb-1">{{ i.text }}</p>
-                            </li>
-                            {% endfor %}
-                            {% if user.is_authenticated %}
-                            <li class="list-group-item">
-                                <h5 class="">New comment</h5>
-                                    <form method="POST">
-                                        <div class="form-group my-3">
-                                            <textarea class="form-control" id="comment" rows="3"></textarea>
-                                        </div>
-                                    <button type="button" class="btn btn-primary mb-2">Submit</button>
-                                </form>
-                            </li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </main>
+{% block comment %}
+<div class="card mb-3">
+    <div class="card-header">
+        Comments
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for i in comments %}
+        <li class="list-group-item" id="comment_{{ i.pk }}">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ i.pk|comment }}: {{ i.author.username|user }} commented {{ i.created_date|naturaltime }}</h5>
             </div>
-        </div>
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-bottom bg-dark flex-md-nowrap p-0">
-                        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">
-                <div class="text-center">
-                    <img src="{% static 'logos/inverted-long.png' %}" height="30" alt="Inverted long PNOJ logo">
-                </div>
-            </a>
-
-            <div class="collapse flex-row-reverse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav flex-row-reverse px-3 my-auto">
-                    {% if user.is_authenticated %}
-                    <li class="nav-item dropup ml-4">
-                        <a class="nav-link dropdown-toggle" href="#" id="profile-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="{{ user.email|gravatar_url:30 }}" alt="User profile picture" class="img-thumbnail">
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profile-dropdown">
-                            <a class="dropdown-item disabled" href="#" tabindex="-1" aria-disabled="true">Logged in as {{ user.username }}</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'user_profile' %}">Profile</a>
-                            {% if user.is_staff %}
-                            <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
-                            {% endif %}
-                            <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
-                        </div>
-                    </li>
-                    {% else %}
-                    <li class="nav-item ml-4 my-auto">
-                        <div class="text-light">
-                            <a class="text-info" href="{% url 'login' %}">Log in</a> or <a class="text-info" href="{% url 'signup' %}">Sign up</a>
-                        </div>
-                    </li>
-                    {% endif %}
-                    {% block navbar %}
-                    {% endblock %}
-                </ul>
+            <p class="mt-2 mb-3">{{ i.text }}</p>
+            <a href="{% url 'comment' i.pk %}" class="card-link">Reply</a>
+        </li>
+        {% empty %}
+        <li class="list-group-item">
+            There are no comments.
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% if user.is_authenticated %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">New comment</h5>
+        <form method="POST" action="{{ request.path }}/add_comment">
+            {% csrf_token %}
+            <div class="form-group my-3">
+                <textarea class="form-control" id="comment" rows="3" name="text"></textarea>
             </div>
-
-        </nav>
-
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-    </body>
-</html>
+            <button type="submit" class="btn btn-primary mb-2">Submit</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

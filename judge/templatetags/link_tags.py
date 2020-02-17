@@ -12,25 +12,34 @@ def user_url(username):
     return reverse('profile', args=[username])
  
 @register.filter
-def user(username):
+def user(username, postfix=''):
     url = user_url(username)
-    return mark_safe('<a href="{0}">{1}</a>'.format(url, username))
+    return mark_safe('<a href="{0}{1}">{2}</a>'.format(url, postfix, username))
 
 @register.filter
 def problem_url(slug):
     return reverse('problem', args=[slug])
  
 @register.filter
-def problem(slug):
+def problem(slug, postfix=''):
     url = problem_url(slug)
     problem = models.Problem.objects.get(slug=slug)
-    return mark_safe('<a href="{0}">{1}</a>'.format(url, problem.name))
+    return mark_safe('<a href="{0}{1}">{2}</a>'.format(url, postfix, problem.name))
 
 @register.filter
 def submission_url(pk):
     return reverse('submission', args=[pk])
  
 @register.filter
-def submission(pk):
+def submission(pk, postfix=''):
     url = submission_url(pk)
-    return mark_safe('<a href="{0}">#{1}</a>'.format(url, pk))
+    return mark_safe('<a href="{0}{1}">#{2}</a>'.format(url, postfix, pk))
+
+@register.filter
+def comment_url(pk):
+    return reverse('comment', args=[pk])
+ 
+@register.filter
+def comment(pk, postfix=''):
+    url = comment_url(pk)
+    return mark_safe('<a href="{0}{1}">#{2}</a>'.format(url, postfix, pk))

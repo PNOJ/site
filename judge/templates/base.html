@@ -39,10 +39,15 @@
                 </nav>
 
                 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                    <div class="mb-6">
+                    <div class="mb-3">
                         {% block main %}
                         {% endblock %}
                     </div>
+                    <div class="mb-6">
+                        {% block comment %}
+                        {% endblock %}
+                    </div>
+
                 </main>
             </div>
         </div>

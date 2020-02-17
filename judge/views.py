@@ -6,9 +6,11 @@ from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.edit import FormView
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse, reverse_lazy
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
@@ -83,6 +85,8 @@ class Problem(DetailView):
         context = super().get_context_data(**kwargs)
         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
         context['page_title'] = 'PNOJ: ' + self.get_object().name
+        problem_contenttype = ContentType.objects.get_for_model(models.Problem)
+        context['comments'] = models.Comment.objects.filter(parent_content_type=problem_contenttype, parent_object_id=self.get_object().pk)
         return context
 
 def create_judge_job(submission_id, problem_file_url, submission_file_url, callback_url, language, memory_limit):
@@ -155,6 +159,7 @@ class ProblemSubmit(CreateView):
         return context
 
 @csrf_exempt
+@require_POST
 def callback(request, uuid):
     submission_pk = cache.get("callback-{0}".format(uuid))
 
@@ -272,6 +277,8 @@ class Profile(DetailView):
         context = super().get_context_data(**kwargs)
         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
         context['page_title'] = 'PNOJ: User ' + self.get_object().username
+        user_contenttype = ContentType.objects.get_for_model(models.User)
+        context['comments'] = models.Comment.objects.filter(parent_content_type=user_contenttype, parent_object_id=self.get_object().pk)
         return context
 
 
@@ -338,5 +345,37 @@ class Submission(DetailView):
         context = super().get_context_data(**kwargs)
         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
         context['page_title'] = 'PNOJ: Submission #' + str(self.get_object().pk)
+        submission_contenttype = ContentType.objects.get_for_model(models.Submission)
+        context['comments'] = models.Comment.objects.filter(parent_content_type=submission_contenttype, parent_object_id=self.get_object().pk)
         return context
 
+class Comment(DetailView):
+    model = models.Comment
+    context_object_name = 'comment'
+    template_name = 'judge/comment.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
+        context['page_title'] = 'PNOJ: Comment #' + str(self.get_object().pk)
+        comment_contenttype = ContentType.objects.get_for_model(models.Comment)
+        context['comments'] = models.Comment.objects.filter(parent_content_type=comment_contenttype, parent_object_id=self.get_object().pk)
+        return context
+
+@require_POST
+@login_required
+def add_comment(request, parent_type, parent_id):
+    if parent_type == 'problem':
+        parent = get_object_or_404(models.Problem, slug=parent_id)
+    elif parent_type == 'user':
+        parent = get_object_or_404(models.User, username=parent_id)
+    elif parent_type == 'submission':
+        parent = get_object_or_404(models.Submission, pk=parent_id)
+    elif parent_type == 'comment':
+        parent = get_object_or_404(models.Comment, pk=parent_id)
+    else:
+        raise NotImplementedError
+    author = request.user
+    comment = models.Comment(parent=parent, text=request.POST['text'], author=author)
+    comment.save()
+    return redirect('comment', pk=comment.pk)

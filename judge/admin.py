@@ -23,6 +23,7 @@ admin.site.register(models.Submission)
 admin.site.register(models.ProblemCategory)
 admin.site.register(models.ProblemType)
 admin.site.register(models.Organization)
+admin.site.register(models.Comment)
 admin.site.site_header = "PNOJ administration"
 admin.site.site_title = "PNOJ admin"
 # admin_site.register(auth.models.Group)
