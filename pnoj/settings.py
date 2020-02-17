@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import kubernetes as k8s
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -122,21 +123,40 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.abspath('../sitefiles/media')
+MEDIA_ROOT = 'media'
 
 AUTH_USER_MODEL = 'judge.User'
+
+LOGIN_REDIRECT_URL = '/accounts/profile'
 
 LOGOUT_REDIRECT_URL = "/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.abspath('../sitefiles/emails')
+EMAIL_FILE_PATH = 'emails'
 
 # ========================
 
-languages = [
-    {
+languages = {
+    'py3': {
         'code': 'py3',
         'name': 'Python3',
-        'docker_image': 'docker.pkg.github.com/pnoj/judge/python3:latest'
-    }
-]
+        'docker_image': 'pnoj/python3:v1.1'
+        },
+    'java8': {
+        'code': 'java8',
+        'name': 'Java 8',
+        'docker_image': 'pnoj/java8:v1.1'
+    },
+    'c++17': {
+        'code': 'c++17',
+        'name': 'C++17',
+        'docker_image': 'pnoj/cpp17:v1.1'
+    },
+}
+
+cpu_limit = "100m"
+
+try:
+    from pnoj.config import *
+except ImportError:
+    print("Please create a config file to override values in settings.py")

@@ -1,6 +1,7 @@
 {% load static %}
 {% load gravatar_tags %}
 {% load link_tags %}
+{% load tz %}
 
 <!doctype html>
 <html lang="en">
@@ -39,9 +40,33 @@
                 </nav>
 
                 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                    <div class="mb-6">
+                    <div class="mb-3">
                         {% block main %}
                         {% endblock %}
+                    </div>
+                    <div class="mb-6">
+                        <ul class="list-group">
+                            {% for i in comments %}
+                            <li class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ i.author.username|user }}</h5>
+                                    <small>commented on {{ i.created_on|localtime }}</small>
+                                </div>
+                                <p class="mb-1">{{ i.text }}</p>
+                            </li>
+                            {% endfor %}
+                            {% if user.is_authenticated %}
+                            <li class="list-group-item">
+                                <h5 class="">New comment</h5>
+                                    <form method="POST">
+                                        <div class="form-group my-3">
+                                            <textarea class="form-control" id="comment" rows="3"></textarea>
+                                        </div>
+                                    <button type="button" class="btn btn-primary mb-2">Submit</button>
+                                </form>
+                            </li>
+                            {% endif %}
+                        </ul>
                     </div>
                 </main>
             </div>

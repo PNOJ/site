@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_comments.html' %}
 {% load gravatar_tags %}
 
 {% block main %}
@@ -17,14 +17,20 @@
         </div>
     </div>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">Cras justo odio</li>
-        <li class="list-group-item">Dapibus ac facilisis in</li>
-        <li class="list-group-item">Vestibulum at eros</li>
+        <li class="list-group-item">Points: {{ profile.points }}</li>
+        <li class="list-group-item">Number of Problems Solved: {{ profile.num_problems_solved }}</li>
     </ul>
-    {% if profile == user %}
-    <div class="card-body">
-        <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit profile</a>
     </div>
-    {% endif %}
-</div>
 {% endblock %}
+
+{% block navbar %}
+    {% if profile == user %}
+    <li class="nav-item ml-3 my-auto">
+        <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit profile</a>
+    </li>
+    {% endif %}
+    <li class="nav-item my-auto">
+        <a href="{% url 'user_submissions' profile.username %}" class="btn btn-warning">{{ profile.username }}'s Submissions</a>
+    </li>
+{% endblock %}
+

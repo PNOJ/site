@@ -21,7 +21,11 @@ status_choices = [
     ('IR', 'Invalid Return'),
     ('IE', 'Internal Error'),
     ('AB', 'Aborted'),
+    ('G', 'Grading'),
 ]
+
+language_choices = [(i['code'], i['name']) for i in settings.languages.values()]
+
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
@@ -30,8 +34,7 @@ class User(AbstractUser):
     timezone_choices = [(i, i) for i in pytz.common_timezones]
     timezone = models.CharField(max_length=50, choices=timezone_choices, default="UTC")
 
-    main_language_choices = [(i['code'], i['name']) for i in settings.languages]
-    main_language = models.CharField(max_length=10, choices=main_language_choices, default='py3')
+    main_language = models.CharField(max_length=10, choices=language_choices, default='py3')
 
     registered_date = models.DateTimeField(auto_now_add=True)
 
@@ -40,10 +43,33 @@ class User(AbstractUser):
     points = models.FloatField(default=0)
     num_problems_solved = models.PositiveIntegerField(default=0)
 
-    # def update_stats(self):
-    #     problems = Problem.objects.filter(author__exact=self).order_by()
-    #     points = problems.aggregate(Sum('points'))
-    #     num_problems = problems.filter().count()
+    def calculate_points(self):
+        submissions = self.submission_set.all()
+        points = {}
+        for i in submissions:
+            if not i.points:
+                continue
+            elif i.problem.pk in points:
+                points[i.problem.pk] = max(points[i.problem.pk], i.points)
+            else:
+                points[i.problem.pk] = i.points
+        return sum(points.values())
+
+    def calculate_num_problems_solved(self):
+        solved_problems = set()
+        submissions = self.submission_set.all()
+        for i in submissions:
+            if i.scored == i.scoreable and i.problem.name not in solved_problems:
+                solved_problems.add(i.problem.name)
+        return len(solved_problems)
+
+    def update_stats(self):
+        self.points = self.calculate_points()
+        self.num_problems_solved = self.calculate_num_problems_solved()
+
+    def save(self, *args, **kwargs):
+        self.update_stats()
+        super().save(*args, **kwargs)
 
 
 class Organization(models.Model):
@@ -84,6 +110,7 @@ class Problem(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
     slug = models.SlugField(unique=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     points = models.PositiveSmallIntegerField()
     is_partial = models.BooleanField()
@@ -123,23 +150,35 @@ class Problem(models.Model):
         problem_types = ProblemType.objects.filter(name__in=manifest_dict['metadata']['type'])
         self.problem_type.set(problem_types)
 
+def submission_file_path(instance, filename):
+    ext = filename.split(".")[-1]
+    uuid_hex = uuid.uuid4().hex
+    return "submissions/{0}.{1}".format(uuid_hex, ext)
+
+
 class Submission(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True)
 
-    scored = models.PositiveSmallIntegerField()
-    scoreable = models.PositiveSmallIntegerField()
+    scored = models.PositiveSmallIntegerField(null=True, blank=True)
+    scoreable = models.PositiveSmallIntegerField(null=True, blank=True)
 
-    points = models.FloatField()
+    points = models.FloatField(null=True, blank=True, default=0)
 
-    time = models.FloatField()
-    memory = models.FloatField()
+    time = models.FloatField(null=True, blank=True)
+    memory = models.FloatField(null=True, blank=True)
 
-    source = models.FileField(upload_to="submissions/")
+    source = models.FileField(upload_to=submission_file_path)
 
-    status = models.CharField(max_length=4, choices=status_choices)
+    status = models.CharField(max_length=4, choices=status_choices, blank=True)
+
+    language = models.CharField(max_length=10, choices=language_choices, null=True)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('submission', args=[self.pk])
 
 class SubmissionBatchResult(models.Model):
     name = models.CharField(max_length=20)
@@ -152,8 +191,8 @@ class SubmissionBatchResult(models.Model):
 
     status = models.CharField(max_length=4, choices=status_choices)
 
-    time = models.FloatField()
-    memory = models.FloatField()
+    time = models.FloatField(null=True, blank=True)
+    memory = models.FloatField(null=True, blank=True)
 
 class SubmissionTestcaseResult(models.Model):
     name = models.CharField(max_length=20)
@@ -164,8 +203,8 @@ class SubmissionTestcaseResult(models.Model):
 
     status = models.CharField(max_length=4, choices=status_choices)
 
-    time = models.FloatField()
-    memory = models.FloatField()
+    time = models.FloatField(null=True, blank=True)
+    memory = models.FloatField(null=True, blank=True)
 
 class Comment(models.Model):
     parent_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)

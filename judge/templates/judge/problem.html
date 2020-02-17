@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_comments.html' %}
 {% load gravatar_tags %}
 {% load markdown_tags %}
 
@@ -25,4 +25,17 @@
         {% endif %}
     </ul>
 </div>
+{% block comments %}
+{{ block.super }}
+{% endblock %}
+{% endblock %}
+
+{% block navbar %}
+{% if user.is_authenticated %}
+<li class="nav-item my-auto">
+    <a href="{% url 'problem_all_submissions' problem.slug %}" class="btn btn-warning">All Submissions</a>
+    <a href="{% url 'problem_best_submissions' problem.slug %}" class="btn btn-warning">Best Submissions</a>
+    <a href="{% url 'problem_submit' problem.slug %}" class="btn btn-primary">Submit solution</a>
+</li>
+{% endif %}
 {% endblock %}

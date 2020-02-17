@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Submit solution to <a href="{% url 'problem' problem.slug %}">{{ problem.name }}</a></h5>
+        <form method="post" id="problem_submit_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mr-2 my-auto">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block navbar %}
+<a href="{% url 'problem' problem.slug %}" class="btn btn-primary ml-3 my-auto" role="button" aria-pressed="true">Cancel</a>
+<button type="submit" class="btn btn-primary mr-2 my-auto" form="problem_submit_form">Submit</button>
+{% endblock %}
