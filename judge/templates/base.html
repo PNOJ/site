@@ -1,13 +1,19 @@
 {% load static %}
 {% load gravatar_tags %}
 {% load link_tags %}
+{% load common_tags %}
+{% load flatpages %}
 
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {% if page_title %}
         <title>{{ page_title }}</title>
+        {% elif flatpage.title %}
+        <title>{{ flatpage.title }}</title>
+        {% endif %}
 
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -25,15 +31,26 @@
                         <ul class="nav flex-column">
                             {% for item in sidebar_items %}
                             <li class="nav-item">
+                                {% if item.view|startswith:"flatpage " %}
+                                {% with flatpage_name=item.view|split %}
+                                {% get_flatpages flatpage_name.1 as flatpage %}
+                                <a class="nav-link" href="{{ flatpage.0.url }}">
+                                    {{ flatpage.0.title }}
+                                {% endwith %}
+                                {% else %}
                                 {% if item.view == request.resolver_match.view_name %}
                                 <a class="nav-link active" href="{% url item.view %}">
+                                    {{ item.name }}
                                 {% else %}
                                 <a class="nav-link" href="{% url item.view %}">
-                                {% endif %}
                                     {{ item.name }}
+                                {% endif %}
+                                {% endif %}
                                 </a>
                             </li>
                             {% endfor %}
+                            {% block sidebar %}
+                            {% endblock %}
                         </ul>
                     </div>
                 </nav>

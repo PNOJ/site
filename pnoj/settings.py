@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     # 'judge.apps.PNOJAdminConfig',
 ]
 
@@ -134,6 +136,10 @@ LOGOUT_REDIRECT_URL = "/"
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'emails'
+
+SITE_ID = 1
+
+# APPEND_SLASH = True
 
 # ========================
 
