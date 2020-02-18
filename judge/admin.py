@@ -19,6 +19,20 @@ User = get_user_model()
 class ProblemAdmin(admin.ModelAdmin):
     fields = ('problem_file', 'slug')
 
+    def has_view_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if obj == None:
+            return True
+        return request.user in obj.author.all()
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if obj == None:
+            return True
+        return request.user in obj.author.all()
+
 
 admin.site.register(User)
 admin.site.register(models.SidebarItem)
