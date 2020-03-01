@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sites',
     'django.contrib.flatpages',
+    # 'storages',
+    'django_s3_storage',
     # 'judge.apps.PNOJAdminConfig',
 ]
 
@@ -126,7 +128,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = 'media'
+# MEDIA_ROOT = 'media'
 
 AUTH_USER_MODEL = 'judge.User'
 
@@ -147,21 +149,21 @@ languages = {
     'py3': {
         'code': 'py3',
         'name': 'Python3',
-        'docker_image': 'pnoj/python3:v1.1'
+        'docker_image': 'pnoj/python3:v1.2'
         },
     'java8': {
         'code': 'java8',
         'name': 'Java 8',
-        'docker_image': 'pnoj/java8:v1.1'
+        'docker_image': 'pnoj/java8:v1.2'
     },
     'c++17': {
         'code': 'c++17',
         'name': 'C++17',
-        'docker_image': 'pnoj/cpp17:v1.1'
+        'docker_image': 'pnoj/cpp17:v1.2'
     },
 }
 
-cpu_limit = "100m"
+cpu_limit = "500m"
 
 try:
     from pnoj.config import *

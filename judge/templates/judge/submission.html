@@ -14,13 +14,26 @@
             </div>
         </div>
 
-        {% if submission.submissionbatchresult_set.all|length_is:"0" %}
-        No data is available at this time.
-        <a href="{{ request.get_full_path }}" class="badge badge-primary">Refresh</a>
+        {% if submission.status == "G" %}
+        <div class="alert alert-warning" role="alert">
+            No data is available at this time.
+            <a href="{{ request.get_full_path }}" class="badge badge-primary">Refresh</a>
+        </div>
+        {% endif %}
+
+        {% if submission.message %}
+        <div class="alert alert-primary" role="alert">
+            {{ submission.message }}
+        </div>            
         {% endif %}
 
         {% for batch in submission.submissionbatchresult_set.all %}
-        <p>{{ batch.name }} ({{ batch.scored }}/{{ batch.scoreable }})</p>
+        <p>
+            {{ batch.name }} ({{ batch.scored }}/{{ batch.scoreable }})
+            {% if batch.message %}
+            {{ batch.message }}
+            {% endif %}
+        </p>
         <table class="table table-sm">
             <thead>
                 <tr>
@@ -28,6 +41,7 @@
                     <th scope="col">Status</th>
                     <th scope="col">Time</th>
                     <th scope="col">Memory</th>
+                    <th scope="col">Notes</th>
                 </tr>
             </thead>
             {% for testcase in batch.submissiontestcaseresult_set.all %}
@@ -45,6 +59,13 @@
                     {% else %}
                     <td>-</td>
                     {% endif %}
+                    <td>
+                        {% if testcase.message %}
+                        {{ testcase.message }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
                 </tr>
             </tbody>
             {% endfor %}
@@ -52,6 +73,8 @@
         {% endfor %}
     </div>
     <ul class="list-group list-group-flush">
+        <li class="list-group-item">Language: {{ submission.get_language_display }}</li>
+        <li class="list-group-item">Status: {{ submission.status }}</li>
         {% if submission.scoreable %}
         <li class="list-group-item">Score: {{ submission.scored }}/{{ submission.scoreable }} ({{ submission.points }}/{{ submission.problem.points }})</li>
         {% else %}
@@ -67,7 +90,6 @@
         {% else %}
         <li class="list-group-item">Memory: -</li>
         {% endif %}
-        <li class="list-group-item">Status: {{ submission.status }}</li>
     </ul>
 </div>
 {% endblock %}

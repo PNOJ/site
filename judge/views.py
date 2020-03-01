@@ -155,7 +155,7 @@ class ProblemSubmit(CreateView):
         context = super().get_context_data(**kwargs)
         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
         context['problem'] = models.Problem.objects.get(slug=self.kwargs['slug'])
-        context['page_title'] = 'PNOJ: Submit to ' + self.get_object().name
+        context['page_title'] = 'PNOJ: Submit to ' + context['problem'].name
         return context
 
 @csrf_exempt
@@ -168,15 +168,18 @@ def callback(request, uuid):
     logger.info(result)
 
     submission = models.Submission.objects.get(pk=submission_pk)
-    submission.scored = result['score']['scored']
-    submission.scoreable = result['score']['scoreable']
-    submission.points = (result['score']['scored']/result['score']['scoreable'])*submission.problem.points
+    if 'score' in result and result['score']['scoreable'] != None:
+        submission.scored = result['score']['scored']
+        submission.scoreable = result['score']['scoreable']
+        submission.points = (result['score']['scored']/result['score']['scoreable'])*submission.problem.points
+    else:
+        submission.points = 0
     submission.status = result['status']
     if 'resource' in result:
         submission.time = result['resource']['time']
         submission.memory = result['resource']['memory']
-    if 'data' in result and not result['data'] == None:
-        submission.message = result['data']
+    if 'message' in result and not result['message'] == None:
+        submission.message = result['message']
 
     submission.save()
 
@@ -184,8 +187,8 @@ def callback(request, uuid):
         batch = models.SubmissionBatchResult()
         batch.name = batch_result['name']
         batch.submission = submission
-        if 'data' in batch_result and not batch_result['data'] == None:
-            batch.message = batch_result['data']
+        if 'message' in batch_result and not batch_result['message'] == None:
+            batch.message = batch_result['message']
         batch.scored = batch_result['score']['scored']
         batch.scoreable = batch_result['score']['scoreable']
         batch.status = batch_result['status']
@@ -198,9 +201,8 @@ def callback(request, uuid):
             testcase.name = testcase_result['name']
             testcase.submission = submission
             testcase.batch = batch
-            if 'data' in batch_result and not batch_result['data'] == None:
-                # testcase.message = testcase_result['data']
-                pass
+            if 'message' in testcase_result and not testcase_result['message'] == None:
+                testcase.message = testcase_result['message']
             testcase.status = testcase_result['status']
             if 'resource' in testcase_result:
                 testcase.time = testcase_result['resource']['time']
