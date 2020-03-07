@@ -17,6 +17,8 @@
             {{ comment.parent.username|user }}
             {% elif comment.parent_content_type.model == 'comment' %}
             Comment {{ comment.parent.pk|comment }}
+            {% elif comment.parent_content_type.model == 'blogpost' %}
+            {{ comment.parent.slug|post }}
             {% else %}
             unknown.
             {% endif %}

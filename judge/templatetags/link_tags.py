@@ -43,3 +43,13 @@ def comment_url(pk):
 def comment(pk, postfix=''):
     url = comment_url(pk)
     return mark_safe('<a href="{0}{1}">#{2}</a>'.format(url, postfix, pk))
+
+@register.filter
+def post_url(slug):
+    return reverse('blog_post', args=[slug])
+ 
+@register.filter
+def post(slug, postfix=''):
+    url = post_url(slug)
+    post_obj = models.BlogPost.objects.get(slug=slug)
+    return mark_safe('<a href="{0}{1}">{2}</a>'.format(url, postfix, post_obj.title))

@@ -17,5 +17,6 @@ def status_color(status):
         'ce': 'secondary',
         'g': 'light',
         'ie': 'secondary',
+        'md': 'light',
     }
     return status_colors[status.lower()]

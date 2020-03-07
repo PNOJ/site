@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        {% if submission.status == "G" %}
+        {% if submission.status_display == "G" %}
         <div class="alert alert-warning" role="alert">
             No data is available at this time.
             <a href="{{ request.get_full_path }}" class="badge badge-primary">Refresh</a>
@@ -48,7 +48,7 @@
             <tbody>
                 <tr>
                     <th scope="row">{{ testcase.name }}</th>
-                    <td>{{ testcase.status }}</td>
+                    <td>{{ testcase.status_display }}</td>
                     {% if testcase.time %}
                     <td>{{ testcase.time }}s</td>
                     {% else %}
@@ -74,7 +74,7 @@
     </div>
     <ul class="list-group list-group-flush">
         <li class="list-group-item">Language: {{ submission.get_language_display }}</li>
-        <li class="list-group-item">Status: {{ submission.status }}</li>
+        <li class="list-group-item">Status: {{ submission.status_display }}</li>
         {% if submission.scoreable %}
         <li class="list-group-item">Score: {{ submission.scored }}/{{ submission.scoreable }} ({{ submission.points }}/{{ submission.problem.points }})</li>
         {% else %}

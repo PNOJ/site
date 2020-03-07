@@ -28,14 +28,33 @@ from pnoj.settings import k8s_config
 User = get_user_model()
 logger = logging.getLogger('django')
 
-class Index(TemplateView):
+class Index(ListView):
     template_name = 'judge/index.html'
+    model = models.BlogPost
+    context_object_name = 'posts'
+
+    def get_ordering(self):
+        return '-created'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
         context['page_title'] = 'PNOJ'
         return context
+
+class BlogPost(DetailView):
+    model = models.BlogPost
+    context_object_name = 'post'
+    template_name = "judge/blog_post.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
+        context['page_title'] = 'PNOJ: ' + self.get_object().title
+        blogpost_contenttype = ContentType.objects.get_for_model(models.BlogPost)
+        context['comments'] = models.Comment.objects.filter(parent_content_type=blogpost_contenttype, parent_object_id=self.get_object().pk)
+        return context
+
 
 class UserProfile(RedirectView):
     permanent = False
@@ -91,7 +110,8 @@ class Problem(DetailView):
 
 def create_judge_job(submission_id, problem_file_url, submission_file_url, callback_url, language, memory_limit):
     # Configureate Pod template container
-    resource = k8s.client.V1ResourceRequirements(limits={'memory': str(memory_limit) + "Mi", 'cpu': settings.cpu_limit})
+    resource_config = {'memory': str(memory_limit) + "Mi", 'cpu': settings.cpu_limit}
+    resource = k8s.client.V1ResourceRequirements(requests=resource_config, limits=resource_config)
     container = k8s.client.V1Container(
         name="judge-container-{0}".format(submission_id),
         image=settings.languages[language]['docker_image'],
@@ -130,7 +150,7 @@ class ProblemSubmit(CreateView):
         model = form.save(commit=False)
         model.author = self.request.user
         model.problem = models.Problem.objects.get(slug=self.kwargs['slug'])
-        model.status = 'G'
+        model.status = 'MD'
         model.save()
 
         callback_uuid = uuid.uuid4().hex
@@ -375,6 +395,8 @@ def add_comment(request, parent_type, parent_id):
         parent = get_object_or_404(models.Submission, pk=parent_id)
     elif parent_type == 'comment':
         parent = get_object_or_404(models.Comment, pk=parent_id)
+    elif parent_type == 'post':
+        parent = get_object_or_404(models.BlogPost, slug=parent_id)
     else:
         raise NotImplementedError
     author = request.user

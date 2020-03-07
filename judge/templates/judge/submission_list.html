@@ -28,9 +28,9 @@
             </thead>
             <tbody>
                 {% for i in submissions %}
-                <tr class="table-{{ i.status|status_color }}">
+                <tr class="table-{{ i.status_display|status_color }}">
                     <td>{{ i.pk|submission }}</td>
-                    <td>{{ i.status }}</td>
+                    <td>{{ i.status_display }}</td>
                     {% if i.scoreable %}
                     <td>{{ i.scored }}/{{ i.scoreable }}</td>
                     {% else %}

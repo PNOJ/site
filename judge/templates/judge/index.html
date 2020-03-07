@@ -1,9 +1,27 @@
 {% extends 'base.html' %}
+{% load humanize %}
+{% load markdown_tags %}
 
 {% block main %}
-<div class="card">
+<div class="card mb-3">
     <div class="card-body">
         Welcome to PNOJ! Please register or try out a problem <a href="{% url 'problems_index' %}">here</a>.
     </div>
+</div>
+
+<div class="card"> 
+    <div class="card-header">
+        News
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for post in posts %}
+        <a href="{% url 'blog_post' post.slug %}" class="list-group-item list-group-item-action">
+            <h5 class="mb-1">{{ post.title }}</h5>
+            <h6 class="mb-3 text-muted">{{ post.author.all|join:", " }} posted {{ post.created|naturaltime }}</h6>
+            <!-- <small>{{ post.author.all|join:", " }} posted {{ post.created|naturaltime }}</small> -->
+            <p class="mb-1">{{ post.text|markdown|truncatewords_html:100 }}</p>
+        </a>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

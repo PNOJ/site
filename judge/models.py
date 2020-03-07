@@ -9,6 +9,8 @@ from django.db.models import Sum
 import uuid
 import zipfile
 import yaml
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 
@@ -22,6 +24,7 @@ status_choices = [
     ('IE', 'Internal Error'),
     ('AB', 'Aborted'),
     ('G', 'Grading'),
+    ('MD', 'Missing Data'),
 ]
 
 language_choices = [(i['code'], i['name']) for i in settings.languages.values()]
@@ -180,6 +183,16 @@ class Submission(models.Model):
         from django.urls import reverse
         return reverse('submission', args=[self.pk])
 
+    @property
+    def status_display(self):
+        if self.status == 'MD':
+            if timezone.now() - self.created <= datetime.timedelta(minutes=30):
+                return 'G'
+            else:
+                return 'IE'
+        else:
+            return self.status
+
 class SubmissionBatchResult(models.Model):
     name = models.CharField(max_length=20)
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
@@ -223,3 +236,16 @@ class SidebarItem(models.Model):
 
     def __str__(self):
         return self.name
+
+class BlogPost(models.Model):
+    author = models.ManyToManyField(User, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
+
+    title = models.CharField(max_length=128, blank=True)
+    text = models.TextField(blank=True)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.title
+
