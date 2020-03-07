@@ -21,10 +21,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g$tck@aj%cjd0!ugy4cz!bhu90!cgl4vipj_6s*hy4*198%s@&'
+SECRET_KEY = '<secret key here>'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -42,9 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    # 'storages',
     'django_s3_storage',
-    # 'judge.apps.PNOJAdminConfig',
 ]
 
 
@@ -83,10 +81,7 @@ WSGI_APPLICATION = 'pnoj.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    # Override DATABASES
 }
 
 
@@ -128,8 +123,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# MEDIA_ROOT = 'media'
-
 AUTH_USER_MODEL = 'judge.User'
 
 LOGIN_REDIRECT_URL = '/accounts/profile'
@@ -141,7 +134,44 @@ EMAIL_FILE_PATH = 'emails'
 
 SITE_ID = 1
 
-# APPEND_SLASH = True
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+
+EMAIL_BACKEND = '<your email backend>'
+
+# S3 STORAGE CONFIGURATION
+# FOLLOW https://github.com/etianen/django-s3-storage
+DEFAULT_FILE_STORAGE = ""
+AWS_REGION = ''
+AWS_S3_ENDPOINT_URL = ""
+AWS_ACCESS_KEY_ID = ""
+AWS_SECRET_ACCESS_KEY = ""
+AWS_S3_BUCKET_NAME = ''
+AWS_S3_FILE_OVERWRITE = False
+
+STATICFILES_STORAGE = ""
+AWS_S3_BUCKET_NAME_STATIC = ""
+AWS_S3_BUCKET_AUTH_STATIC = False
+AWS_S3_ENDPOINT_URL_STATIC = ""
+
+# K8s CONFIGURATION
+# FOLLOW https://github.com/kubernetes-client/python/blob/master/kubernetes/README.md
 
 # ========================
 
@@ -166,6 +196,6 @@ languages = {
 cpu_limit = "500m"
 
 try:
-    from pnoj.config import *
+    from pnoj.config.config import *
 except ImportError:
     print("Please create a config file to override values in settings.py")
