@@ -13,7 +13,7 @@ spec:
         app: pnoj-site
     spec:
       containers:
-      - image: pnoj/site:v0.1.5
+      - image: pnoj/site:v0.1.6
         name: pnojsite
         ports:
         - containerPort: 8000
