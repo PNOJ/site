@@ -12,6 +12,8 @@ RUN apk add --no-cache --virtual .build-deps \
     && pip install --no-cache-dir psycopg2 \
     && apk del --no-cache .build-deps
 
+RUN apk add --no-cache libpq
+
 WORKDIR /app
 
 COPY requirements.txt ./
@@ -22,4 +24,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "pnoj.wsgi"]
+CMD ["gunicorn", "pnoj.wsgi", "-b", "0.0.0.0:8000"]

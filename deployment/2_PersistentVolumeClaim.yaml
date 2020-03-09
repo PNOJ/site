@@ -1,0 +1,14 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pnoj-db-volumeclaim
+spec:
+  accessModes:
+  - ReadWriteMany
+  # CONFIGURE THE FOLLOWING AS DESIRED
+  # resources:
+    # requests:
+      # storage: 1Gi
+  selector:
+    matchLabels:
+      volume: pnoj-db-volume
