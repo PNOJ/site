@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: pnoj-site
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: pnoj-site
@@ -13,7 +13,7 @@ spec:
         app: pnoj-site
     spec:
       containers:
-      - image: pnoj/site:v0.1.6
+      - image: pnoj/site:v0.1.7
         name: pnojsite
         ports:
         - containerPort: 8000

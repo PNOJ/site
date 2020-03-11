@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('admin/', admin_site.urls),
     path('', include('judge.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('django.contrib.auth.urls')),
     path('<path:url>', views.flatpage),
 ]

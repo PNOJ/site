@@ -92,13 +92,15 @@
                             {% if user.is_staff %}
                             <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
                             {% endif %}
-                            <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                            <!-- <a class="dropdown-item" href="{}% url 'logout' %{}">Log out</a> -->
+                            <a class="dropdown-item" href="{% url 'account_logout' %}">Log out</a>
                         </div>
                     </li>
                     {% else %}
                     <li class="nav-item ml-4 my-auto">
                         <div class="text-light">
-                            <a class="text-info" href="{% url 'login' %}">Log in</a> or <a class="text-info" href="{% url 'signup' %}">Sign up</a>
+                            <!-- <a class="text-info" href="{}% url 'login' %{}">Log in</a> or <a class="text-info" href="{% url 'signup' %}">Sign up</a> -->
+                            <a class="text-info" href="{% url 'account_login' %}">Log in</a> or <a class="text-info" href="{% url 'account_signup' %}">Sign up</a>
                         </div>
                     </li>
                     {% endif %}
