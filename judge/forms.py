@@ -2,6 +2,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth import get_user_model
 
+from allauth.account.forms import SignupForm
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Invisible
+
 User = get_user_model()
 
 class RegisterForm(UserCreationForm):
@@ -22,3 +26,6 @@ class RegisterForm(UserCreationForm):
             user.save()
             return user
 
+class PNOJSignupForm(SignupForm):
+    # captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
+    captcha = ReCaptchaField()

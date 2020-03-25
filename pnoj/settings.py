@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'captcha',
 ]
 
 
@@ -198,7 +199,7 @@ languages = {
     },
 }
 
-cpu_limit = "500m"
+cpu_limit = "800m"
 
 # ACCOUNT_ACTIVATION_DAYS = 7
 # REGISTRATION_OPEN = True
@@ -213,6 +214,11 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+RECAPTCHA_PUBLIC_KEY = '<your recaptcha public key>'
+RECAPTCHA_PRIVATE_KEY = '<your recaptcha private key>'
+
+ACCOUNT_FORMS = {'signup': 'judge.forms.PNOJSignupForm'}
 
 try:
     from pnoj.config.config import *

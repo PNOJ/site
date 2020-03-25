@@ -112,11 +112,15 @@ def create_judge_job(submission_id, problem_file_url, submission_file_url, callb
     # Configureate Pod template container
     resource_config = {'memory': str(memory_limit) + "Mi", 'cpu': settings.cpu_limit}
     resource = k8s.client.V1ResourceRequirements(requests=resource_config, limits=resource_config)
+    # securityCapabilties = k8s.client.V1Capabilities(add=["NET_RAW"])
+    # securityContext = k8s.client.V1SecurityContext(capabilities=securityCapabilties)
     container = k8s.client.V1Container(
         name="judge-container-{0}".format(submission_id),
         image=settings.languages[language]['docker_image'],
         args=['--submission_file_url', submission_file_url, '--problem_file_url', problem_file_url, '--callback_url', callback_url],
-        resources=resource)
+        resources=resource,
+        # security_context=securityContext)
+        )
     # Create and configurate a spec section
     template = k8s.client.V1PodTemplateSpec(
         metadata=k8s.client.V1ObjectMeta(labels={"app": "pnoj"}),
