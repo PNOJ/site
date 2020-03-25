@@ -1,0 +1,29 @@
+{% extends 'base_comments.html' %}
+{% load link_tags %}
+{% load humanize %}
+{% load tz %}
+
+{% block main %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">
+            {{ comment.pk|comment }}:
+            {{ comment.author.username|user }} commented {{ comment.created_date|naturaltime }} on 
+            {% if comment.parent_content_type.model == 'problem' %}
+            {{ comment.parent.slug|problem }}
+            {% elif comment.parent_content_type.model == 'submission' %}
+            Submission {{ comment.parent.pk|submission }}
+            {% elif comment.parent_content_type.model == 'user' %}
+            {{ comment.parent.username|user }}
+            {% elif comment.parent_content_type.model == 'comment' %}
+            Comment {{ comment.parent.pk|comment }}
+            {% elif comment.parent_content_type.model == 'blogpost' %}
+            {{ comment.parent.slug|post }}
+            {% else %}
+            unknown.
+            {% endif %}
+        </h5>
+        <p class="card-text">{{ comment.text }}</p>
+    </div>
+</div>
+{% endblock %}

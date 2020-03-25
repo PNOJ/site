@@ -1,0 +1,16 @@
+# Please note that you are responsible for setting up backups for this volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pnoj-db-volume
+  labels:
+    volume: pnoj-db-volume
+spec:
+  accessModes:
+  - ReadWriteMany
+  # CONFIGURE THE FOLLOWING AS DESIRED
+  # capacity:
+    # storage: 1Gi
+  # nfs:
+    # server: 192.168.0.1
+    # path: "/exports"

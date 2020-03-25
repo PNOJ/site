@@ -1,0 +1,103 @@
+{% extends 'base_comments.html' %}
+{% load gravatar_tags %}
+{% load markdown_tags %}
+{% load link_tags %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <div class="media mb-4">
+            <div class="media-body">
+                <h5 class="mt-0">
+                    Submission {{ submission.pk|submission }} for {{ submission.problem.slug|problem }} by {{ submission.author.username|user }}
+                </h5>
+            </div>
+        </div>
+
+        {% if submission.status_display == "G" %}
+        <div class="alert alert-warning" role="alert">
+            No data is available at this time.
+            <a href="{{ request.get_full_path }}" class="badge badge-primary">Refresh</a>
+        </div>
+        {% endif %}
+
+        {% if submission.message %}
+        <div class="alert alert-primary" role="alert">
+            {{ submission.message }}
+        </div>            
+        {% endif %}
+
+        {% for batch in submission.submissionbatchresult_set.all %}
+        <p>
+            {{ batch.name }} ({{ batch.scored }}/{{ batch.scoreable }})
+            {% if batch.message %}
+            {{ batch.message }}
+            {% endif %}
+        </p>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Memory</th>
+                    <th scope="col">Notes</th>
+                </tr>
+            </thead>
+            {% for testcase in batch.submissiontestcaseresult_set.all %}
+            <tbody>
+                <tr>
+                    <th scope="row">{{ testcase.name }}</th>
+                    <td>{{ testcase.status }}</td>
+                    {% if testcase.time %}
+                    <td>{{ testcase.time }}s</td>
+                    {% else %}
+                    <td>-</td>
+                    {% endif %}
+                    {% if testcase.memory %}
+                    <td>{{ testcase.memory }} MB</td>
+                    {% else %}
+                    <td>-</td>
+                    {% endif %}
+                    <td>
+                        {% if testcase.message %}
+                        {{ testcase.message }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+        {% endfor %}
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Language: {{ submission.get_language_display }}</li>
+        <li class="list-group-item">Status: {{ submission.status_display }}</li>
+        {% if submission.scoreable %}
+        <li class="list-group-item">Score: {{ submission.scored }}/{{ submission.scoreable }} ({{ submission.points }}/{{ submission.problem.points }})</li>
+        {% else %}
+        <li class="list-group-item">Score: -</li>
+        {% endif %}
+        {% if submission.time %}
+        <li class="list-group-item">Time: {{ submission.time }}s</li>
+        {% else %}
+        <li class="list-group-item">Time: -</li>
+        {% endif %}
+        {% if submission.memory %}
+        <li class="list-group-item">Memory: {{ submission.memory }} MB</li>
+        {% else %}
+        <li class="list-group-item">Memory: -</li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block navbar %}
+{% if user.is_authenticated %}
+<li class="nav-item my-auto">
+    <a href="{% url 'problem_submit' submission.problem.slug %}" class="btn btn-primary">Re-Submit</a>
+</li>
+{% endif %}
+{% endblock %}

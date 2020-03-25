@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pnoj-cache
+  labels:
+    app: pnoj-cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pnoj-cache
+  template:
+    metadata:
+      labels:
+        app: pnoj-cache
+    spec:
+      containers:
+      - name: memcached
+        image: memcached:alpine
+        resources:
+          requests:
+            memory: "32Mi"
+          limits:
+            memory: "64Mi"
+        ports:
+        - containerPort: 11211

@@ -1,0 +1,36 @@
+{% extends 'base_comments.html' %}
+{% load gravatar_tags %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <div class="media">
+            <img src="{{ profile.email|gravatar_url:200 }}" class="mr-3 img-thumbnail" alt="User's profile picture">
+            <div class="media-body">
+                <h5 class="mt-0">{{ profile.username }}</h5>
+                {% if profile.description == "" %}
+                <p class="font-italic">This user has not shared any information.</p>
+                {% else %}
+                {{ profile.description }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Points: {{ profile.points }}</li>
+        <li class="list-group-item">Number of Problems Solved: {{ profile.num_problems_solved }}</li>
+    </ul>
+    </div>
+{% endblock %}
+
+{% block navbar %}
+    {% if profile == user %}
+    <li class="nav-item ml-3 my-auto">
+        <a href="{% url 'profile_edit' %}" class="btn btn-primary">Edit profile</a>
+    </li>
+    {% endif %}
+    <li class="nav-item my-auto">
+        <a href="{% url 'user_submissions' profile.username %}" class="btn btn-warning">{{ profile.username }}'s Submissions</a>
+    </li>
+{% endblock %}
+

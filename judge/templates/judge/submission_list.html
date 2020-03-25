@@ -1,0 +1,78 @@
+{% extends 'base_pnoj.html' %}
+{% load link_tags %}
+{% load color_tags %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        {% if purpose == 'user_submissions' %}
+        <h5 class="card-title">{{ author|user }}'s Submissions</h5>
+        {% elif purpose == 'problem_all_submissions' %}
+        <h5 class="card-title">All Submissions for {{ problem.slug|problem }}</h5>
+        {% elif purpose == 'problem_best_submissions' %}
+        <h5 class="card-title">Best Submissions for {{ problem.slug|problem }}</h5>
+        {% else %}
+        <h5 class="card-title">Submissions</h5>
+        {% endif %}
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Points</th>
+                    <th scope="col">Language</th>
+                    <th scope="col">Problem</th>
+                    <th scope="col">User</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in submissions %}
+                <tr class="table-{{ i.status_display|status_color }}">
+                    <td>{{ i.pk|submission }}</td>
+                    <td>{{ i.status_display }}</td>
+                    {% if i.scoreable %}
+                    <td>{{ i.scored }}/{{ i.scoreable }}</td>
+                    {% else %}
+                    <td>-</td>
+                    {% endif %}
+                    <td>{{ i.points }}/{{ i.problem.points }}</td>
+                    <td>{{ i.get_language_display }}</td>
+                    <td>{{ i.problem.slug|problem }}</td>
+                    <td>{{ i.author.username|user }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Prev</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-disabled="true">Prev</a>
+                </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-disabled="true">
+                        {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    </a> 
+                </li>
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-disabled="true">Next</a>
+                </li>
+
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}

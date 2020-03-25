@@ -1,0 +1,13 @@
+# You must have an Ingress Controller set up.
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: pnoj-site-ingress
+spec:
+  rules:
+  - host: <your hostname>
+    http:
+      paths:
+      - backend:
+          serviceName: pnoj-site-service
+          servicePort: 8000
