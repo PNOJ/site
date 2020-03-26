@@ -18,7 +18,7 @@
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td><a href={% url 'profile' i.username %}>{{ i.username }}</a></td>
-                    <td>{{ i.points }}</td>
+                    <td>{{ i.points|floatformat }}</td>
                     <td>{{ i.num_problems_solved }}</td>
                 </tr>
                 {% endfor %}

@@ -36,7 +36,7 @@
                     {% else %}
                     <td>-</td>
                     {% endif %}
-                    <td>{{ i.points }}/{{ i.problem.points }}</td>
+                    <td>{{ i.points|floatformat }}/{{ i.problem.points }}</td>
                     <td>{{ i.get_language_display }}</td>
                     <td>{{ i.problem.slug|problem }}</td>
                     <td>{{ i.author.username|user }}</td>

@@ -2,6 +2,7 @@
 {% load gravatar_tags %}
 {% load markdown_tags %}
 {% load link_tags %}
+{% load color_tags %}
 
 {% block main %}
 <div class="card">
@@ -48,14 +49,14 @@
             <tbody>
                 <tr>
                     <th scope="row">{{ testcase.name }}</th>
-                    <td>{{ testcase.status }}</td>
+                    <td class="font-weight-bold text-{{ testcase.status|status_color }}">{{ testcase.status }}</td>
                     {% if testcase.time %}
-                    <td>{{ testcase.time }}s</td>
+                    <td>{{ testcase.time|floatformat }}s</td>
                     {% else %}
                     <td>-</td>
                     {% endif %}
                     {% if testcase.memory %}
-                    <td>{{ testcase.memory }} MB</td>
+                    <td>{{ testcase.memory|floatformat }} MB</td>
                     {% else %}
                     <td>-</td>
                     {% endif %}
@@ -76,17 +77,17 @@
         <li class="list-group-item">Language: {{ submission.get_language_display }}</li>
         <li class="list-group-item">Status: {{ submission.status_display }}</li>
         {% if submission.scoreable %}
-        <li class="list-group-item">Score: {{ submission.scored }}/{{ submission.scoreable }} ({{ submission.points }}/{{ submission.problem.points }})</li>
+        <li class="list-group-item">Score: {{ submission.scored }}/{{ submission.scoreable }} ({{ submission.points|floatformat }}/{{ submission.problem.points }})</li>
         {% else %}
         <li class="list-group-item">Score: -</li>
         {% endif %}
         {% if submission.time %}
-        <li class="list-group-item">Time: {{ submission.time }}s</li>
+        <li class="list-group-item">Time: {{ submission.time|floatformat }}s</li>
         {% else %}
         <li class="list-group-item">Time: -</li>
         {% endif %}
         {% if submission.memory %}
-        <li class="list-group-item">Memory: {{ submission.memory }} MB</li>
+        <li class="list-group-item">Memory: {{ submission.memory|floatformat }} MB</li>
         {% else %}
         <li class="list-group-item">Memory: -</li>
         {% endif %}

@@ -231,7 +231,7 @@ class Comment(models.Model):
 
 class SidebarItem(models.Model):
     name = models.CharField(max_length=24)
-    view = models.CharField(max_length=36)
+    view = models.CharField(max_length=64)
     order = models.PositiveSmallIntegerField()
 
     def __str__(self):

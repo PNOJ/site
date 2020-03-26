@@ -201,6 +201,8 @@ languages = {
 
 cpu_limit = "800m"
 
+tos_url = "https://wiki.oj.paullee.dev/Judge:Terms"
+
 # ACCOUNT_ACTIVATION_DAYS = 7
 # REGISTRATION_OPEN = True
 # REGISTRATION_SALT = '<registration salt here>'

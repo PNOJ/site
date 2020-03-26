@@ -18,5 +18,6 @@ def status_color(status):
         'g': 'light',
         'ie': 'secondary',
         'md': 'light',
+        'ab': 'secondary',
     }
     return status_colors[status.lower()]

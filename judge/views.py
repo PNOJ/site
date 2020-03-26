@@ -266,7 +266,7 @@ class ProblemBestSubmissions(ListView):
         return models.Submission.objects.filter(problem=self.problem).order_by(self.get_ordering())
 
     def get_ordering(self):
-        return '-scored'
+        return '-points'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

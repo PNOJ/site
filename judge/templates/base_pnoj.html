@@ -40,6 +40,11 @@
                                 <a class="nav-link" href="{{ flatpage.0.url }}">
                                     {{ flatpage.0.title }}
                                 {% endwith %}
+                                {% elif item.view|startswith:"external " %}
+                                {% with external_url=item.view|split %}
+                                <a class="nav-link" href="{{ external_url.1 }}">
+                                    {{ item.name }}
+                                {% endwith %}
                                 {% else %}
                                 {% if item.view == request.resolver_match.view_name %}
                                 <a class="nav-link active" href="{% url item.view %}">
@@ -100,7 +105,7 @@
                     <li class="nav-item ml-4 my-auto">
                         <div class="text-light">
                             <!-- <a class="text-info" href="{}% url 'login' %{}">Log in</a> or <a class="text-info" href="{% url 'signup' %}">Sign up</a> -->
-                            <a class="text-info" href="{% url 'account_login' %}">Log in</a> or <a class="text-info" href="{% url 'account_signup' %}">Sign up</a>
+                            <a class="font-weight-bold text-info" href="{% url 'account_login' %}">Log in</a> or <a class="font-weight-bold text-info" href="{% url 'account_signup' %}">Sign up</a>
                         </div>
                     </li>
                     {% endif %}
