@@ -4,11 +4,12 @@ on:
     branches:
       - master
     paths:
-      - 'judge/*'
-      - 'pnoj/*'
+      - 'judge/**'
+      - 'pnoj/**'
       - 'requirements.txt'
       - 'Dockerfile'
       - '.dockerignore'
+      - '.github/workflows/build.yml'
 jobs:
   build:
     name: build
