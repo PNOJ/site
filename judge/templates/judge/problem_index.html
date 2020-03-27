@@ -16,7 +16,11 @@
             </thead>
             <tbody>
                 {% for i in problems %}
+                {% if user.is_authenticated %}
                 <tr class="table-{{ i|problem_color:user }}">
+                {% else %}
+                <tr>
+                {% endif %}
                     <td><a href={% url 'problem' i.slug %}>{{ i.name }}</a></td>
                     {% if i.category.all %}
                     <td>{{ i.category.all|join:", " }}</td>
