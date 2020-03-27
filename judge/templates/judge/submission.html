@@ -96,8 +96,13 @@
 {% endblock %}
 
 {% block navbar %}
+{% if user == submission.author %}
+<li class="nav-item my-auto mx-2">
+    <a href="{% url 'submission_source' submission.pk %}" class="btn btn-info">View Source</a>
+</li>
+{% endif %}
 {% if user.is_authenticated %}
-<li class="nav-item my-auto">
+<li class="nav-item my-auto mx-2">
     <a href="{% url 'problem_submit' submission.problem.slug %}" class="btn btn-primary">Re-Submit</a>
 </li>
 {% endif %}
