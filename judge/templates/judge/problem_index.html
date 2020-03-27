@@ -1,4 +1,5 @@
 {% extends 'base_pnoj.html' %}
+{% load color_tags %}
 
 {% block main %}
 <div class="card">
@@ -15,7 +16,7 @@
             </thead>
             <tbody>
                 {% for i in problems %}
-                <tr>
+                <tr class="table-{{ i|problem_color:user }}">
                     <td><a href={% url 'problem' i.slug %}>{{ i.name }}</a></td>
                     {% if i.category.all %}
                     <td>{{ i.category.all|join:", " }}</td>

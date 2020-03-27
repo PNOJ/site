@@ -46,6 +46,19 @@ class User(AbstractUser):
     points = models.FloatField(default=0)
     num_problems_solved = models.PositiveIntegerField(default=0)
 
+    def has_attempted(self, problem):
+        queryset = Submission.objects.filter(author=self).filter(problem=problem)
+        return bool(queryset)
+
+    def has_solved(self, problem):
+        submissions = Submission.objects.filter(author=self).filter(problem=problem)
+        for i in submissions:
+            if i.scoreable == None:
+                continue
+            if i.scored == i.scoreable:
+                return True
+        return False
+
     def calculate_points(self):
         submissions = self.submission_set.all()
         points = {}
