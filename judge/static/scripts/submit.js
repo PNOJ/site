@@ -11,11 +11,12 @@ var app = new Vue({
     el: '.submit-card',
     data: {
         language: '',
+        submit_button_text: 'Submit',
     },
     methods: {
         source: function (newSource, oldSource) {
             if (!newSource.srcElement.files[0].type.startsWith("text")) {
-                editor.setValue("¯\\_(ツ)_/¯");
+                editor.setValue("Whoops! The file you uploaded doesn't look like a text file. If it is a text file, please paste the code into this code editor.");
             } else {
                 var reader = new FileReader();
                 reader.onload = function(e) {
@@ -42,6 +43,8 @@ var submission_form = document.getElementById("problem_submit_form");
 
 submission_form.onsubmit = async (e) => {
     e.preventDefault();
+
+    app.submit_button_text = "Please wait...";
 
     var file = new File([editor.getValue()], "submission.txt", {type: "text/plain"});
     var formData = new FormData(submission_form);
