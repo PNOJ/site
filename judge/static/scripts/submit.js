@@ -11,7 +11,7 @@ var app = new Vue({
     el: '.submit-card',
     data: {
         language: '',
-        submit_button_text: 'Submit',
+        // submit_button_text: 'Submit',
     },
     methods: {
         source: function (newSource, oldSource) {
@@ -44,7 +44,7 @@ var submission_form = document.getElementById("problem_submit_form");
 submission_form.onsubmit = async (e) => {
     e.preventDefault();
 
-    app.submit_button_text = "Please wait...";
+    // app.submit_button_text = "Please wait...";
 
     var file = new File([editor.getValue()], "submission.txt", {type: "text/plain"});
     var formData = new FormData(submission_form);
