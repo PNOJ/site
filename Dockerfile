@@ -12,7 +12,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && pip install --no-cache-dir psycopg2 \
     && apk del --no-cache .build-deps
 
-RUN apk add --no-cache libpq
+RUN apk add --no-cache libpq postgresql-dev gcc python3-dev musl-dev
 
 WORKDIR /app
 
