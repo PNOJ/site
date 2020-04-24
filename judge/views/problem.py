@@ -109,7 +109,7 @@ class ProblemSubmit(CreateView):
         if hasattr(settings, 'override_problem_file_url'):
             logger.info("Problem file url for submission #{0}: {1}".format(model.pk, problem_file_url))
             problem_file_url = settings.override_problem_file_url.format(model.problem.slug)
-        create_judge_job(model.pk, problem_file_url, submission_file_url, callback_url, model.language, model.problem.memory_limit * 2)
+        create_judge_job(model.pk, problem_file_url, submission_file_url, callback_url, model.language, int(model.problem.memory_limit * 2.5))
 
         return super().form_valid(form)
 

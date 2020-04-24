@@ -5,6 +5,7 @@ let ace_language_map = {
     "py3": "python",
     "java8": "java",
     "c++17": "c_cpp",
+    "haskell": "haskell",
 };
 
 var app = new Vue({

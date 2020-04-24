@@ -185,21 +185,26 @@ languages = {
     'py3': {
         'code': 'py3',
         'name': 'Python3',
-        'docker_image': 'pnoj/python3:v1.2'
+        'docker_image': 'pnoj/python3:sha-21c2917'
         },
     'java8': {
         'code': 'java8',
         'name': 'Java 8',
-        'docker_image': 'pnoj/java8:v1.2'
+        'docker_image': 'pnoj/java8:sha-21c2917'
     },
     'c++17': {
         'code': 'c++17',
         'name': 'C++17',
-        'docker_image': 'pnoj/cpp17:v1.2'
+        'docker_image': 'pnoj/cpp17:sha-21c2917'
     },
+    'haskell': {
+        'code': 'haskell',
+        'name': 'Haskell',
+        'docker_image': 'pnoj/haskell:sha-474f3f4'
+    }
 }
 
-cpu_limit = "800m"
+cpu_limit = "600m"
 
 tos_url = "https://wiki.oj.paullee.dev/Judge:Terms"
 
