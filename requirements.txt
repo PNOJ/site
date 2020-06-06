@@ -6,7 +6,7 @@ certifi==2019.11.28
 chardet==3.0.4
 confusable-homoglyphs==3.2.0
 defusedxml==0.6.0
-Django==3.0.4
+Django==3.0.7
 django-allauth==0.41.0
 django-recaptcha==2.0.6
 django-s3-storage==0.13.0
