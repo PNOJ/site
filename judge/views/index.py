@@ -13,6 +13,8 @@ class Index(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
+        context['problems'] = models.Problem.objects.order_by('-created')[:5]
+        context['comments'] = models.Comment.objects.order_by('-created_date')[:5]
         context['page_title'] = 'PNOJ'
         return context
 

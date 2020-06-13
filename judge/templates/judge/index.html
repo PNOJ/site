@@ -1,11 +1,33 @@
 {% extends 'base_pnoj.html' %}
 {% load humanize %}
 {% load markdown_tags %}
+{% load link_tags %}
 
 {% block main %}
 <div class="card mb-3">
     <div class="card-body">
         Welcome to PNOJ! Please register or try out a problem <a href="{% url 'problems_index' %}">here</a>.
+    </div>
+</div>
+
+<div class="card-deck mb-3">
+    <div class="card">
+        <div class="card-header">New Problems</div>
+        <ul class="list-group list-group-flush">
+            {% for problem in problems %}
+            <li class="list-group-item">
+                {{ problem.slug|problem }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="card">
+        <div class="card-header">New Comments</div>
+        <ul class="list-group list-group-flush">
+            {% for comment in comments %}
+            <li class="list-group-item">{{ comment|comment_html_nodate }}</li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 
