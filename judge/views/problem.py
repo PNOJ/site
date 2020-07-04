@@ -13,8 +13,6 @@ from django.core.cache import cache
 from django.urls import reverse
 from pnoj import settings
 import logging
-from pnoj.settings import k8s
-from pnoj.settings import k8s_config
 import json
 
 logger = logging.getLogger('django')
@@ -46,41 +44,15 @@ class Problem(DetailView):
         context['comments'] = models.Comment.objects.filter(parent_content_type=problem_contenttype, parent_object_id=self.get_object().pk)
         return context
 
-def create_judge_job(submission_id, problem_file_url, submission_file_url, callback_url, language, memory_limit):
-    # Configureate Pod template container
-    resource_config = {'memory': str(memory_limit) + "Mi", 'cpu': settings.cpu_limit}
-    resource = k8s.client.V1ResourceRequirements(requests=resource_config, limits=resource_config)
-    # securityCapabilties = k8s.client.V1Capabilities(add=["NET_RAW"])
-    # securityContext = k8s.client.V1SecurityContext(capabilities=securityCapabilties)
-    container = k8s.client.V1Container(
-        name="judge-container-{0}".format(submission_id),
-        image=settings.languages[language]['docker_image'],
-        args=['--submission_file_url', submission_file_url, '--problem_file_url', problem_file_url, '--callback_url', callback_url],
-        resources=resource,
-        # security_context=securityContext)
-        )
-    # Create and configurate a spec section
-    template = k8s.client.V1PodTemplateSpec(
-        metadata=k8s.client.V1ObjectMeta(labels={"app": "pnoj"}),
-        spec=k8s.client.V1PodSpec(restart_policy="Never", containers=[container], runtime_class_name="gvisor"))
-        # spec=k8s.client.V1PodSpec(restart_policy="Never", containers=[container]))
-    # Create the specification of deployment
-    spec = k8s.client.V1JobSpec(
-        template=template,
-	active_deadline_seconds=1800,
-	ttl_seconds_after_finished=3600,
-        backoff_limit=4)
-    # Instantiate the job object
-    job = k8s.client.V1Job(
-        api_version="batch/v1",
-        kind="Job",
-        metadata=k8s.client.V1ObjectMeta(name="judge-job-{0}".format(submission_id)),
-        spec=spec)
-
-    api_instance = k8s.client.BatchV1Api(k8s.client.ApiClient(k8s_config))
-    api_response = api_instance.create_namespaced_job(
-        body=job,
-        namespace="pnoj")
+def create_judge_task(submission_id, problem_file_url, submission_file_url, language, callback_url, passthrough_url):
+    post_data = {
+        'problem_file_url': problem_file_url,
+        'submission_file_url': submission_file_url,
+        'language': language,
+        'callback_url': callback_url,
+        'passthrough_url': callback_url,
+    }
+    response = requests.post(settings.judge['endpoint'], data=post_data)
 
 @method_decorator(login_required, name='dispatch')
 class ProblemSubmit(CreateView):
@@ -109,7 +81,7 @@ class ProblemSubmit(CreateView):
         if hasattr(settings, 'override_problem_file_url'):
             logger.info("Problem file url for submission #{0}: {1}".format(model.pk, problem_file_url))
             problem_file_url = settings.override_problem_file_url.format(model.problem.slug)
-        create_judge_job(model.pk, problem_file_url, submission_file_url, callback_url, model.language, int(model.problem.memory_limit * 2.5))
+        create_judge_task(model.pk, problem_file_url, submission_file_url, model.language, callback_url, passthrough_url)
 
         return super().form_valid(form)
 

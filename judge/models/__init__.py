@@ -27,7 +27,7 @@ status_choices = [
     ('MD', 'Missing Data'),
 ]
 
-language_choices = [(i['code'], i['name']) for i in settings.languages.values()]
+language_choices = [(i, settings.languages[i]) for i in settings.languages]
 
 
 class User(AbstractUser):
@@ -37,7 +37,7 @@ class User(AbstractUser):
     timezone_choices = [(i, i) for i in pytz.common_timezones]
     timezone = models.CharField(max_length=50, choices=timezone_choices, default="UTC")
 
-    main_language = models.CharField(max_length=10, choices=language_choices, default='py3')
+    main_language = models.CharField(max_length=10, choices=language_choices, default='python3')
 
     registered_date = models.DateTimeField(auto_now_add=True)
 

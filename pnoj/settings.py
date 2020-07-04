@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import kubernetes as k8s
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -176,35 +175,21 @@ AWS_S3_BUCKET_NAME_STATIC = ""
 AWS_S3_BUCKET_AUTH_STATIC = False
 AWS_S3_ENDPOINT_URL_STATIC = ""
 
-# K8s CONFIGURATION
-# FOLLOW https://github.com/kubernetes-client/python/blob/master/kubernetes/README.md
-
-# ========================
-
 languages = {
-    'py3': {
-        'code': 'py3',
-        'name': 'Python3',
-        'docker_image': 'pnoj/python3:sha-21c2917'
-        },
-    'java8': {
-        'code': 'java8',
-        'name': 'Java 8',
-        'docker_image': 'pnoj/java8:sha-21c2917'
-    },
-    'c++17': {
-        'code': 'c++17',
-        'name': 'C++17',
-        'docker_image': 'pnoj/cpp17:sha-21c2917'
-    },
-    'haskell': {
-        'code': 'haskell',
-        'name': 'Haskell',
-        'docker_image': 'pnoj/haskell:sha-474f3f4'
-    }
+    'python3': "Python 3",
+    'java8': "Java 8",
+    'c++17': "C++17",
+    'haskell': "Haskell",
+    'brainfuck': "Brainfuck",
+    'c18': "C18",
+    'java11': "Java 11",
+    'scratch': "Scratch",
+    'text': "Text",
 }
 
-cpu_limit = "600m"
+judge = {
+    "endpoint": "<your judge teller endpoint>",
+}
 
 tos_url = "https://wiki.oj.paullee.dev/Judge:Terms"
 

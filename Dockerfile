@@ -16,11 +16,11 @@ RUN apk add --no-cache libpq postgresql-dev gcc python3-dev musl-dev
 
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY requirements.txt /app/
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY . /app/
 
 EXPOSE 8000
 
