@@ -14,6 +14,8 @@ from django.urls import reverse
 from pnoj import settings
 import logging
 import json
+import requests
+from dyndict import dyndict
 
 logger = logging.getLogger('django')
 
@@ -50,9 +52,11 @@ def create_judge_task(submission_id, problem_file_url, submission_file_url, lang
         'submission_file_url': submission_file_url,
         'language': language,
         'callback_url': callback_url,
-        'passthrough_url': callback_url,
+        'passthrough_url': passthrough_url,
+        'token': settings.judge['token'],
     }
-    response = requests.post(settings.judge['endpoint'], data=post_data)
+    response = requests.post(f"{settings.judge['endpoint']}/create/task", data=post_data)
+    response.raise_for_status()
 
 @method_decorator(login_required, name='dispatch')
 class ProblemSubmit(CreateView):
@@ -69,12 +73,18 @@ class ProblemSubmit(CreateView):
 
         callback_uuid = uuid.uuid4().hex
         cache.set('callback-{0}'.format(callback_uuid), model.pk, 1800)
+        cache.set('passthrough-{0}'.format(model.pk), dyndict(add_num=False), 1800)
+        cache.set('language-{0}'.format(model.pk), (model.language, model.get_language_display()), 1800)
         callback_url = self.request.build_absolute_uri(reverse('callback', kwargs={'uuid': callback_uuid}))
+        passthrough_url = self.request.build_absolute_uri(reverse('passthrough', kwargs={'uuid': callback_uuid}))
         submission_file_url = self.request.build_absolute_uri(model.source.url)
         problem_file_url = self.request.build_absolute_uri(model.problem.problem_file.url)
         if hasattr(settings, 'override_callback_url'):
             logger.info("Callback url for submission #{0}: {1}".format(model.pk, callback_url))
             callback_url = settings.override_callback_url.format(callback_uuid)
+        if hasattr(settings, 'override_passthrough_url'):
+            logger.info("Passthrough url for submission #{0}: {1}".format(model.pk, passthrough_url))
+            passthrough_url = settings.override_passthrough_url.format(callback_uuid)
         if hasattr(settings, 'override_submission_file_url'):
             logger.info("Submission file url for submission #{0}: {1}".format(model.pk, submission_file_url))
             submission_file_url = settings.override_submission_file_url.format(model.problem.slug, model.language)
@@ -144,7 +154,27 @@ def callback(request, uuid):
             testcase.save()
 
     submission.author.save()
+
+    cache.delete("passthrough-{0}".format(submission.pk))
+
     return HttpResponse("OK")
+
+@csrf_exempt
+@require_POST
+def passthrough(request, uuid):
+    submission_pk = cache.get(f"callback-{uuid}")
+    previous_status = cache.get(f"passthrough-{submission_pk}")
+
+    result = json.loads(request.body)
+
+    previous_status += result
+
+    cache.set(f"passthrough-{submission_pk}", previous_status, 1800)
+
+    logger.info(result)
+
+    return HttpResponse("OK")
+
 
 class ProblemAllSubmissions(ListView):
     context_object_name = "submissions"

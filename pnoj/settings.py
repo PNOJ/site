@@ -178,7 +178,7 @@ AWS_S3_ENDPOINT_URL_STATIC = ""
 languages = {
     'python3': "Python 3",
     'java8': "Java 8",
-    'c++17': "C++17",
+    'cpp17': "C++17",
     'haskell': "Haskell",
     'brainfuck': "Brainfuck",
     'c18': "C18",
@@ -189,6 +189,7 @@ languages = {
 
 judge = {
     "endpoint": "<your judge teller endpoint>",
+    "token": "<your judge teller token>",
 }
 
 tos_url = "https://wiki.oj.paullee.dev/Judge:Terms"

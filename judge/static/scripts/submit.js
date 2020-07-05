@@ -2,10 +2,15 @@
 
 let ace_language_map = {
     "": "plain_text",
-    "py3": "python",
+    "python3": "python",
     "java8": "java",
-    "c++17": "c_cpp",
+    "cpp17": "c_cpp",
     "haskell": "haskell",
+    "brainfuck": "plain_text",
+    "c18": "c_cpp",
+    "java11": "java",
+    "scratch": "json",
+    "text": "plain_text",
 };
 
 var app = new Vue({
@@ -16,7 +21,20 @@ var app = new Vue({
     },
     methods: {
         source: function (newSource, oldSource) {
-            if (!newSource.srcElement.files[0].type.startsWith("text")) {
+            if (newSource.srcElement.files[0].name.endsWith(".sb3")) {
+                JSZip.loadAsync(newSource.srcElement.files[0]).then(function(zip) {
+                    let sb3project = zip.file("project.json");
+                    if (sb3project == null) {
+                        editor.setValue("Whoops! If you uploaded a Scratch project, please ensure it is a valid .sb3 project. Otherwise, please upload a text file, not a zip file.");
+                    } else {
+                        sb3project.async("string").then(result => {
+                            editor.setValue(result);
+                        });
+                    }
+                });
+            } else if (newSource.srcElement.files[0].name.endsWith(".sb2") || newSource.srcElement.files[0].name.endsWith(".sb")) {
+                editor.setValue("Whoops! Only .sb3 projects are supported.");
+            } else if (!newSource.srcElement.files[0].type.startsWith("text")) {
                 editor.setValue("Whoops! The file you uploaded doesn't look like a text file. If it is a text file, please paste the code into this code editor.");
             } else {
                 var reader = new FileReader();

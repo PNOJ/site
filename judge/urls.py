@@ -14,6 +14,7 @@ urlpatterns = [
     path('problem/<slug:slug>/submissions', views.ProblemAllSubmissions.as_view(), name='problem_all_submissions'),
     path('problem/<slug:slug>/rank', views.ProblemBestSubmissions.as_view(), name='problem_best_submissions'),
     path('callback/<str:uuid>', views.callback, name='callback'),
+    path('passthrough/<str:uuid>', views.passthrough, name='passthrough'),
     path('users/', views.UserIndex.as_view(), name='users_index'),
     path('user/<str:slug>', views.Profile.as_view(), name='profile'),
     path('user/<str:slug>/submissions', views.UserSubmissions.as_view(), name='user_submissions'),
@@ -21,7 +22,7 @@ urlpatterns = [
     path('submissions/', views.SubmissionIndex.as_view(), name='submission_index'),
     path('submission/<int:pk>', views.Submission.as_view(), name='submission'),
     path('submission/<int:pk>/source', views.SubmissionSource.as_view(), name='submission_source'),
-    path('submission/<int:pk>', views.Submission.as_view(), name='submission'),
+    path('submission/<int:pk>/data', views.get_submission_data, name='submission_data'),
     path('comment/<int:pk>', views.Comment.as_view(), name='comment'),
     path('<str:parent_type>/<slug:parent_id>/add_comment', views.add_comment, name='add_comment'),
 ]
