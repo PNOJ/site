@@ -73,7 +73,7 @@ class ProblemSubmit(CreateView):
 
         callback_uuid = uuid.uuid4().hex
         cache.set('callback-{0}'.format(callback_uuid), model.pk, 1800)
-        cache.set('passthrough-{0}'.format(model.pk), dyndict(add_num=False), 1800)
+        cache.set('passthrough-{0}'.format(model.pk), dyndict(refer_by="name"), 1800)
         cache.set('language-{0}'.format(model.pk), (model.language, model.get_language_display()), 1800)
         callback_url = self.request.build_absolute_uri(reverse('callback', kwargs={'uuid': callback_uuid}))
         passthrough_url = self.request.build_absolute_uri(reverse('passthrough', kwargs={'uuid': callback_uuid}))

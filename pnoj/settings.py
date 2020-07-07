@@ -176,7 +176,7 @@ AWS_S3_BUCKET_AUTH_STATIC = False
 AWS_S3_ENDPOINT_URL_STATIC = ""
 
 languages = {
-    'python3': "Python 3",
+    'python3': "Python3",
     'java8': "Java 8",
     'cpp17': "C++17",
     'haskell': "Haskell",

@@ -3,9 +3,10 @@
 {% load markdown_tags %}
 {% load link_tags %}
 {% load color_tags %}
+{% load static %}
 
 {% block main %}
-<div class="card">
+<div class="card result-card">
     <div class="card-body">
         <div class="media mb-4">
             <div class="media-body">
@@ -15,83 +16,66 @@
             </div>
         </div>
 
-        {% if submission.status_display == "G" %}
-        <div class="alert alert-warning" role="alert">
-            No data is available at this time.
-            <a href="{{ request.get_full_path }}" class="badge badge-primary">Refresh</a>
+        {% verbatim %}
+
+        <div class="alert alert-warning" key="wait" v-if="submission.status == undefined || submission.status == 'G'">
+            Please wait...
         </div>
-        {% endif %}
 
-        {% if submission.message %}
-        <div class="alert alert-primary" role="alert">
-            {{ submission.message }}
+        <div class="alert alert-primary" key="alert" v-if="'message' in submission">
+            <pre>
+                {{ submission.message }}
+            </pre>
         </div>            
-        {% endif %}
 
-        {% for batch in submission.submissionbatchresult_set.all %}
-        <p>
-            {{ batch.name }} ({{ batch.scored }}/{{ batch.scoreable }})
-            {% if batch.message %}
-            {{ batch.message }}
-            {% endif %}
-        </p>
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Time</th>
-                    <th scope="col">Memory</th>
-                    <th scope="col">Notes</th>
-                </tr>
-            </thead>
-            {% for testcase in batch.submissiontestcaseresult_set.all %}
-            <tbody>
-                <tr>
-                    <th scope="row">{{ testcase.name }}</th>
-                    <td class="font-weight-bold text-{{ testcase.status|status_color }}">{{ testcase.status }}</td>
-                    {% if testcase.time %}
-                    <td>{{ testcase.time|floatformat }}s</td>
-                    {% else %}
-                    <td>-</td>
-                    {% endif %}
-                    {% if testcase.memory %}
-                    <td>{{ testcase.memory|floatformat }} MB</td>
-                    {% else %}
-                    <td>-</td>
-                    {% endif %}
-                    <td>
-                        {% if testcase.message %}
-                        {{ testcase.message }}
-                        {% else %}
-                        -
-                        {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-            {% endfor %}
-        </table>
-        {% endfor %}
+
+        <div v-if="submission.batches">
+            <div v-for="batch in submission.batches">
+                <p v-if="batch.score">
+                {{ batch.name }} ({{ batch.score.scored }}/{{ batch.score.scoreable }})
+                <div v-if="batch.message">{{ batch.message }}</div>
+                </p>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Memory</th>
+                            <th scope="col">Notes</th>
+                        </tr>
+                    </thead>
+                    <div v-if="batch.testcases">
+                        <tbody v-for="testcase in batch.testcases">
+                            <tr>
+                                <th scope="row">{{ testcase.name }}</th>
+                                <td class="font-weight-bold" v-bind:class="get_status_color(testcase.status)">{{ testcase.status }}</td>
+                                <td v-if="'time' in testcase.resource">{{ round(testcase.resource.time) }}s</td>
+                                <td v-else>-</td>
+                                <td v-if="'memory' in testcase.resource">{{ round(testcase.resource.memory) }} MB</td>
+                                <td v-else>-</td>
+                                <td v-if="testcase.message">{{ testcase.message }}</td>
+                                <td v-else>-</td>
+                            </tr>
+                        </tbody>
+                    </div>
+                </table>
+            </div>
+        </div>
     </div>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">Language: {{ submission.get_language_display }}</li>
-        <li class="list-group-item">Status: {{ submission.status_display }}</li>
-        {% if submission.scoreable %}
-        <li class="list-group-item">Score: {{ submission.scored }}/{{ submission.scoreable }} ({{ submission.points|floatformat }}/{{ submission.problem.points }})</li>
-        {% else %}
-        <li class="list-group-item">Score: -</li>
-        {% endif %}
-        {% if submission.time %}
-        <li class="list-group-item">Time: {{ submission.time|floatformat }}s</li>
-        {% else %}
-        <li class="list-group-item">Time: -</li>
-        {% endif %}
-        {% if submission.memory %}
-        <li class="list-group-item">Memory: {{ submission.memory|floatformat }} MB</li>
-        {% else %}
-        <li class="list-group-item">Memory: -</li>
-        {% endif %}
+        <li class="list-group-item" key="language" v-if="submission.language">Language: {{ submission.language.display }}</li>
+        <li class="list-group-item" v-else>Language: -</li>
+        <li class="list-group-item" key="status" v-if="submission.status">Status: {{ submission.status }}</li>
+        <li class="list-group-item" v-else>Status: -</li>
+        <li class="list-group-item" key="score" v-if="submission.score && submission.score.scored">Score: {{ submission.score.scored }}/{{ submission.score.scoreable }} ({{ round(submission.score.points) }}/{{ submission.score.max_points }})</li>
+        <li class="list-group-item" v-else>Score: -</li>
+        <li class="list-group-item" key="time" v-if="submission.resource && submission.resource.time">Time: {{ round(submission.resource.time) }}s</li>
+        <li class="list-group-item" v-else>Time: -</li>
+        <li class="list-group-item" key="memory" v-if="submission.resource && submission.resource.memory">Memory: {{ round(submission.resource.memory) }} MB</li>
+        <li class="list-group-item" v-else>Memory: -</li>
     </ul>
+    {% endverbatim %}
 </div>
 {% endblock %}
 
@@ -106,4 +90,8 @@
     <a href="{% url 'problem_submit' submission.problem.slug %}" class="btn btn-primary">Re-Submit</a>
 </li>
 {% endif %}
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'scripts/submission.js' %}"></script>
 {% endblock %}
