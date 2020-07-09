@@ -175,17 +175,17 @@ AWS_S3_BUCKET_NAME_STATIC = ""
 AWS_S3_BUCKET_AUTH_STATIC = False
 AWS_S3_ENDPOINT_URL_STATIC = ""
 
-languages = {
-    'python3': "Python3",
-    'java8': "Java 8",
-    'cpp17': "C++17",
-    'haskell': "Haskell",
-    'brainfuck': "Brainfuck",
-    'c18': "C18",
-    'java11': "Java 11",
-    'scratch': "Scratch",
-    'text': "Text",
-}
+enabled_languages = [
+    'python3',
+    'java8',
+    'cpp17',
+    'haskell',
+    'brainfuck',
+    'c18',
+    'java11',
+    'scratch',
+    'text',
+]
 
 judge = {
     "endpoint": "<your judge teller endpoint>",
