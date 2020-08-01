@@ -3,7 +3,7 @@ from django.views import View
 from .. import forms
 from django.views.generic import DetailView, ListView
 from .. import models
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, FormView
 from django.urls import reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
@@ -86,15 +86,34 @@ class UserSubmissions(ListView):
         context['page_title'] = 'PNOJ: Submissions by User ' + self.user.username
         return context
 
+# class ProfileUpdate(UpdateView):
+#     model = models.User
+#     fields = ['description', 'timezone', 'main_language', 'organizations']
+#     template_name = 'judge/profile_update_form.html'
+#     success_url = reverse_lazy('user_profile')
+
+#     def get_object(self):
+#         return self.request.user
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
+#         context['page_title'] = 'PNOJ: Update Profile'
+#         return context
+
 class ProfileUpdate(UpdateView):
-    model = models.User
-    fields = ['description', 'timezone', 'main_language', 'organizations']
     template_name = 'judge/profile_update_form.html'
+    form_class = forms.ProfileUpdateForm
     success_url = reverse_lazy('user_profile')
 
     def get_object(self):
         return self.request.user
 
+    def get_form_kwargs(self):
+        kwargs = super(UpdateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')

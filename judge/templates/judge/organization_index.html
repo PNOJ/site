@@ -1,0 +1,26 @@
+{% extends 'base_pnoj.html' %}
+{% load link_tags %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Organizations</h5>
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Members</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in organizations %}
+                <tr>
+                    <td>{{ i.slug|organization }}</th>
+                    <td><a href="{% url 'organization_members' i.slug %}">{{ i.member_count }}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

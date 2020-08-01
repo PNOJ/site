@@ -57,6 +57,8 @@ def comment_info(comment_obj):
         parent_url = "Comment " + comment(comment_obj.parent.pk)
     elif parent_type == 'blogpost':
         parent_url = post(comment_obj.parent.slug)
+    elif parent_type == 'organization':
+        parent_url = organization(comment_obj.parent.slug)
     else:
         parent_url = "unknown."
     comment_url = comment(comment_obj.pk)
@@ -83,3 +85,13 @@ def post(slug, postfix=''):
     url = post_url(slug)
     post_obj = models.BlogPost.objects.get(slug=slug)
     return mark_safe('<a href="{0}{1}">{2}</a>'.format(url, postfix, post_obj.title))
+
+@register.filter
+def organization_url(slug):
+    return reverse('organization', args=[slug])
+ 
+@register.filter
+def organization(slug, postfix=''):
+    url = organization_url(slug)
+    organization_obj = models.Organization.objects.get(slug=slug)
+    return mark_safe('<a href="{0}{1}">{2}</a>'.format(url, postfix, organization_obj.name))

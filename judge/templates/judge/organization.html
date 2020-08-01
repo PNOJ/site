@@ -1,0 +1,26 @@
+{% extends 'base_comments.html' %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="mt-0">{{ organization.name }}</h5>
+        {% if organization.description == "" %}
+        <p class="font-italic">This organization has not shared any information.</p>
+        {% else %}
+        {{ organization.description }}
+        {% endif %}
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Owner: {{ organization.owner }}</li>
+        <li class="list-group-item">Admins: {{ organization.admins.all|join:", " }}</li>
+        <li class="list-group-item">Number of Members: {{ member_count }}</li>
+    </ul>
+    </div>
+{% endblock %}
+
+{% block navbar %}
+    <li class="nav-item ml-3 my-auto">
+        <a href="{% url 'organization_members' organization.slug %}" class="btn btn-primary">View members</a>
+    </li>
+{% endblock %}
+

@@ -13,17 +13,17 @@ class User(AbstractUser):
 
     registered_date = models.DateTimeField(auto_now_add=True)
 
-    organizations = models.ManyToManyField('Organization', blank=True)
+    organizations = models.ManyToManyField('Organization', blank=True, related_name='members', related_query_name='member')
 
     points = models.FloatField(default=0)
     num_problems_solved = models.PositiveIntegerField(default=0)
 
     def has_attempted(self, problem):
-        queryset = Submission.objects.filter(author=self).filter(problem=problem)
+        queryset = self.submission_set.filter(problem=problem)
         return bool(queryset)
 
     def has_solved(self, problem):
-        submissions = Submission.objects.filter(author=self).filter(problem=problem)
+        submissions = self.submission_set.filter(problem=problem)
         for i in submissions:
             if i.scoreable == None:
                 continue
@@ -61,10 +61,16 @@ class User(AbstractUser):
 
 
 class Organization(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.PROTECT, related_name="organizations_owning")
+    owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name="organizations_owning")
     admins = models.ManyToManyField('User', related_name="organizations_maintaining")
     name = models.CharField(max_length=64)
+    short_name = models.CharField(max_length=24)
     description = models.TextField(blank=True)
     slug = models.SlugField(unique=True)
+    registered_date = models.DateTimeField(auto_now_add=True)
     
     is_private = models.BooleanField(default=False)
+    access_code = models.CharField(max_length=36, blank=True)
+
+    def __str__(self):
+        return self.name
