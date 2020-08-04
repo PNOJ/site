@@ -33,6 +33,9 @@ class ProblemAdmin(admin.ModelAdmin):
             return True
         return request.user in obj.author.all()
 
+class OrganizationRequestAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'created', 'reviewed')
+    list_filter = ['organization', 'status']
 
 admin.site.register(User)
 admin.site.register(models.SidebarItem)
@@ -41,6 +44,7 @@ admin.site.register(models.Submission)
 admin.site.register(models.ProblemCategory)
 admin.site.register(models.ProblemType)
 admin.site.register(models.Organization)
+admin.site.register(models.OrganizationRequest, OrganizationRequestAdmin)
 admin.site.register(models.Comment)
 admin.site.register(models.BlogPost)
 admin.site.site_header = "PNOJ administration"

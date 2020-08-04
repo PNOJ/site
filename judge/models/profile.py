@@ -1,5 +1,6 @@
 from django.db import models
-from .choices import language_choices, timezone_choices
+from django.urls import reverse
+from .choices import language_choices, timezone_choices, organization_request_status_choices
 from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
@@ -74,3 +75,30 @@ class Organization(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('organization', args=[self.slug])
+
+
+class OrganizationRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="organizations_requested")
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name="requests")
+    created = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=1, choices=organization_request_status_choices, default='p')
+    reason = models.TextField()
+
+    def get_absolute_url(self):
+        return reverse('organization', args=[self.organization.slug])
+
+    def __str__(self):
+        return f'{self.user.username} on {self.organization.name} ({self.pk})'
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.status == 'a' and self.organization not in self.user.organizations.all():
+            self.user.organizations.add(self.organization)
+
+    def reviewed(self):
+        return self.status != 'p'
+
+    reviewed.boolean = True

@@ -1,7 +1,9 @@
 {% extends 'base_comments.html' %}
+{% load link_tags %}
+{% load humanize %}
 
 {% block main %}
-<div class="card">
+<div class="card mb-3">
     <div class="card-body">
         <h5 class="mt-0">{{ organization.name }}</h5>
         {% if organization.description == "" %}
@@ -15,12 +17,55 @@
         <li class="list-group-item">Admins: {{ organization.admins.all|join:", " }}</li>
         <li class="list-group-item">Number of Members: {{ member_count }}</li>
     </ul>
+</div>
+{% if user.is_authenticated %}
+<div class="card">
+    <div class="card-header">
+        Membership Status
     </div>
+    {% if organization in user.organizations.all %}
+    <div class="card-body">
+        <p class="card-text">You are in this organization.</p>
+    </div>
+    {% else %}
+    <ul class="list-group list-group-flush">
+        {% for req in organization_requests %}
+        <li class="list-group-item" id="request_{{ req.pk }}">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ req.user.username|user }} requested to join {{ req.created|naturaltime }}</h5>
+            </div>
+            <p class="mt-2 mb-3">{{ req.reason }}</p>
+            <small class="text-muted mb-1">{{ req.get_status_display }}</small>
+        </li>
+        {% empty %}
+        <li class="list-group-item">
+            {% if organization.is_private %}
+            You did not request to join yet.
+            {% else %}
+            You are not in this organization.
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endif %}
 {% endblock %}
 
 {% block navbar %}
-    <li class="nav-item ml-3 my-auto">
-        <a href="{% url 'organization_members' organization.slug %}" class="btn btn-primary">View members</a>
-    </li>
+<li class="nav-item ml-3 my-auto">
+    <a href="{% url 'organization_members' organization.slug %}" class="btn btn-warning">View members</a>
+    {% if user.is_authenticated %}
+    {% if organization not in user.organizations.all %}
+    {% if not organization.is_private or not organization.access_code == "" %}
+    <a href="{% url 'organization_join' organization.slug %}" class="btn btn-primary">Join organization</a>
+    {% else %}
+    <a href="{% url 'organization_request' organization.slug %}" class="btn btn-primary">Request to join</a>
+    {% endif %}
+    {% else %}
+    <a href="{% url 'organization_leave' organization.slug %}" class="btn btn-primary">Leave organization</a>
+    {% endif %}
+    {% endif %}
+</li>
 {% endblock %}
 

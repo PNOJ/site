@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django.utils import timezone
+from django.urls import reverse
 import datetime
 from .choices import status_choices, language_choices
 from .profile import User
@@ -34,7 +35,6 @@ class Submission(models.Model):
     language = models.CharField(max_length=10, choices=language_choices, null=True)
 
     def get_absolute_url(self):
-        from django.urls import reverse
         return reverse('submission', args=[self.pk])
 
     @property

@@ -1,0 +1,16 @@
+{% extends 'base_pnoj.html' %}
+{% load link_tags %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <h5 class="card-title">Join {{ organization.slug|organization }}</h5>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+            <a href="{{ organization.slug|organization_url }}" class="btn btn-primary" role="button" aria-pressed="true">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
