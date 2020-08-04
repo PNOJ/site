@@ -79,6 +79,14 @@ class Organization(models.Model):
     def get_absolute_url(self):
         return reverse('organization', args=[self.slug])
 
+    def is_open(self):
+        return not self.is_private
+
+    def member_count(self):
+        return User.objects.filter(organizations=self).count()
+
+    is_open.boolean = True
+
 
 class OrganizationRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="organizations_requested")
@@ -91,7 +99,7 @@ class OrganizationRequest(models.Model):
         return reverse('organization', args=[self.organization.slug])
 
     def __str__(self):
-        return f'{self.user.username} on {self.organization.name} ({self.pk})'
+        return f'Request to join {self.user.username} ({self.pk})'
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

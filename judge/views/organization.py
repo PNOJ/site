@@ -20,9 +20,6 @@ class OrganizationIndex(ListView):
     def get_ordering(self):
         return '-name'
 
-    def get_queryset(self):
-        return super(OrganizationIndex, self).get_queryset().annotate(member_count=Count('member'))
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
@@ -41,7 +38,7 @@ class Organization(DetailView):
         context['page_title'] = 'PNOJ: Organization ' + self.get_object().name
         user_contenttype = ContentType.objects.get_for_model(models.Organization)
         context['comments'] = models.Comment.objects.filter(parent_content_type=user_contenttype, parent_object_id=self.get_object().pk)
-        context['member_count'] = models.User.objects.filter(organizations=self.get_object()).count()
+        context['member_count'] = self.get_object().member_count()
         if self.request.user.is_authenticated:
             context['organization_requests'] = models.OrganizationRequest.objects.filter(organization=self.get_object(), user=self.request.user).order_by('-created')[:3]
         else:
