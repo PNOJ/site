@@ -34,7 +34,7 @@ class Submission(DetailView):
         context['page_title'] = 'PNOJ: Submission #' + str(self.get_object().pk)
         submission_contenttype = ContentType.objects.get_for_model(models.Submission)
         context['comments'] = models.Comment.objects.filter(parent_content_type=submission_contenttype, parent_object_id=self.get_object().pk)
-        context['source_viewable'] = self.get_object().author == self.request.user or self.request.user.has_solved(self.get_object().problem)
+        context['source_viewable'] = self.get_object().author == self.request.user or (self.request.user.is_authenticated and self.request.user.has_solved(self.get_object().problem))
         return context
 
 class SubmissionSource(UserPassesTestMixin, DetailView):
@@ -43,7 +43,7 @@ class SubmissionSource(UserPassesTestMixin, DetailView):
     template_name = 'judge/submission_source.html'
 
     def test_func(self):
-        return self.get_object().author == self.request.user or self.request.user.has_solved(self.get_object().problem)
+        return self.get_object().author == self.request.user or (self.request.user.is_authenticated and self.request.user.has_solved(self.get_object().problem))
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
