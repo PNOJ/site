@@ -1,6 +1,7 @@
 {% extends 'base_comments.html' %}
 {% load link_tags %}
 {% load humanize %}
+{% load markdown_tags %}
 
 {% block main %}
 <div class="card mb-3">
@@ -9,7 +10,7 @@
         {% if organization.description == "" %}
         <p class="font-italic">This organization has not shared any information.</p>
         {% else %}
-        {{ organization.description }}
+        {{ organization.description|markdown|linebreaksbr }}
         {% endif %}
     </div>
     <ul class="list-group list-group-flush">
