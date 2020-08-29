@@ -16,13 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.flatpages import views
-# from judge.admin import admin_site
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('admin/', admin_site.urls),
     path('', include('judge.urls')),
     path('accounts/', include('allauth.urls')),
-    # path('accounts/', include('django.contrib.auth.urls')),
-    path('<path:url>', views.flatpage),
 ]
