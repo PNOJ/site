@@ -11,31 +11,27 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.db.models import Count
+from . import mixin
 
-class OrganizationIndex(ListView):
+class OrganizationIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Organization
     context_object_name = 'organizations'
     template_name = 'judge/organization_index.html'
+    title = 'PNOJ: Organizations'
 
     def get_ordering(self):
         return '-name'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Organizations'
-        return context
-
-
-class Organization(DetailView):
+class Organization(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Organization
     context_object_name = 'organization'
     template_name = "judge/organization.html"
 
+    def get_title(self):
+        return 'PNOJ: Organization ' + self.get_object().name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Organization ' + self.get_object().name
         user_contenttype = ContentType.objects.get_for_model(models.Organization)
         context['comments'] = models.Comment.objects.filter(parent_content_type=user_contenttype, parent_object_id=self.get_object().pk)
         context['member_count'] = self.get_object().member_count()
@@ -45,7 +41,7 @@ class Organization(DetailView):
             context['organization_requests'] = []
         return context
 
-class OrganizationMembers(ListView):
+class OrganizationMembers(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Organization
     context_object_name = 'users'
     template_name = 'judge/user_index.html'
@@ -57,15 +53,16 @@ class OrganizationMembers(ListView):
         self.organization = get_object_or_404(models.Organization, slug=self.kwargs['slug'])
         return models.User.objects.filter(organizations=self.organization).order_by(self.get_ordering())
 
+    def get_title(self):
+        return 'PNOJ: Members of Organization ' + self.organization.name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Members of Organization ' + self.organization.name
         context['purpose'] = 'organization_members'
         context['organization'] = self.organization
         return context
 
-class OrganizationRequest(LoginRequiredMixin, CreateView):
+class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin, mixin.SidebarMixin):
     template_name = "judge/organization_form.html"
     model = models.OrganizationRequest
     fields = ['reason']
@@ -78,14 +75,15 @@ class OrganizationRequest(LoginRequiredMixin, CreateView):
     def get_object(self):
         return models.Organization.objects.get(slug=self.kwargs['slug'])
 
+    def get_title(self):
+        return 'PNOJ: Request to join Organization ' + self.get_object().name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Request to join Organization ' + self.get_object().name
         context['organization'] = self.get_object()
         return context
 
-class OrganizationJoin(LoginRequiredMixin, FormView):
+class OrganizationJoin(LoginRequiredMixin, FormView, mixin.TitleMixin, mixin.SidebarMixin):
     template_name = "judge/organization_form.html"
     form_class = forms.OrganizationJoinForm
     fields = ['access_code']
@@ -109,10 +107,11 @@ class OrganizationJoin(LoginRequiredMixin, FormView):
     def get_object(self):
         return models.Organization.objects.get(slug=self.kwargs['slug'])
 
+    def get_title(self):
+        return 'PNOJ: Join Organization ' + self.get_object().name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Join Organization ' + self.get_object().name
         context['organization'] = self.get_object()
         return context
 

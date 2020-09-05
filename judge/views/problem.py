@@ -16,32 +16,29 @@ import logging
 import json
 import requests
 from dyndict import dyndict
+from . import mixin
 
 logger = logging.getLogger('django')
 
-class ProblemIndex(ListView):
+class ProblemIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Problem
     context_object_name = 'problems'
     template_name = 'judge/problem_index.html'
+    title = 'PNOJ: Problems'
 
     def get_ordering(self):
         return 'name'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Problems'
-        return context
-
-class Problem(DetailView):
+class Problem(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Problem
     context_object_name = 'problem'
     template_name = "judge/problem.html"
 
+    def get_title(self):
+        return 'PNOJ: ' + self.get_object().name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: ' + self.get_object().name
         problem_contenttype = ContentType.objects.get_for_model(models.Problem)
         context['comments'] = models.Comment.objects.filter(parent_content_type=problem_contenttype, parent_object_id=self.get_object().pk)
         return context
@@ -59,7 +56,7 @@ def create_judge_task(submission_id, problem_file_url, submission_file_url, lang
     response.raise_for_status()
 
 @method_decorator(login_required, name='dispatch')
-class ProblemSubmit(CreateView):
+class ProblemSubmit(CreateView, mixin.TitleMixin, mixin.SidebarMixin):
     template_name = 'judge/problem_submit.html'
     model = models.Submission
     fields = ('source', 'language')
@@ -95,11 +92,15 @@ class ProblemSubmit(CreateView):
 
         return super().form_valid(form)
 
+    def get_object(self):
+        models.Problem.objects.get(slug=self.kwargs['slug'])
+
+    def get_title(self):
+        return 'PNOJ: Submit to ' + self.get_object().name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['problem'] = models.Problem.objects.get(slug=self.kwargs['slug'])
-        context['page_title'] = 'PNOJ: Submit to ' + context['problem'].name
+        context['problem'] = self.get_object()
         return context
 
 @csrf_exempt
@@ -176,7 +177,7 @@ def passthrough(request, uuid):
     return HttpResponse("OK")
 
 
-class ProblemAllSubmissions(ListView):
+class ProblemAllSubmissions(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     context_object_name = "submissions"
     template_name = 'judge/submission_list.html'
     paginate_by = 50
@@ -188,15 +189,16 @@ class ProblemAllSubmissions(ListView):
     def get_ordering(self):
         return '-created'
 
+    def get_title(self):
+        return 'PNOJ: All Submissions for Problem ' + self.problem.name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
         context['purpose'] = 'problem_all_submissions'
         context['problem'] = self.problem
-        context['page_title'] = 'PNOJ: All Submissions for Problem ' + self.problem.name
         return context
 
-class ProblemBestSubmissions(ListView):
+class ProblemBestSubmissions(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     context_object_name = "submissions"
     template_name = 'judge/submission_list.html'
     paginate_by = 50
@@ -208,10 +210,11 @@ class ProblemBestSubmissions(ListView):
     def get_ordering(self):
         return '-points'
 
+    def get_title(self):
+        return 'PNOJ: Best Submissions for Problem ' + self.problem.name
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
         context['purpose'] = 'problem_best_submissions'
         context['problem'] = self.problem
-        context['page_title'] = 'PNOJ: Best Submissions for Problem ' + self.problem.name
         return context

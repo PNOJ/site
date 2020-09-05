@@ -5,50 +5,46 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
+from . import mixin
 
-class SubmissionIndex(ListView):
+class SubmissionIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Submission
     context_object_name = 'submissions'
     template_name = 'judge/submission_list.html'
     paginate_by = 50
+    title = 'PNOJ: Submissions'
 
     def get_ordering(self):
         return '-created' 
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Submissions'
-        return context
-
-
-
-class Submission(DetailView):
+class Submission(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Submission
     context_object_name = 'submission'
     template_name = 'judge/submission.html'
+
+    def get_title(self):
+        return 'PNOJ: Submission #' + str(self.get_object().pk)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Submission #' + str(self.get_object().pk)
         submission_contenttype = ContentType.objects.get_for_model(models.Submission)
         context['comments'] = models.Comment.objects.filter(parent_content_type=submission_contenttype, parent_object_id=self.get_object().pk)
         context['source_viewable'] = self.get_object().author == self.request.user or (self.request.user.is_authenticated and self.request.user.has_solved(self.get_object().problem))
         return context
 
-class SubmissionSource(UserPassesTestMixin, DetailView):
+class SubmissionSource(UserPassesTestMixin, DetailView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Submission
     context_object_name = 'submission'
     template_name = 'judge/submission_source.html'
 
     def test_func(self):
         return self.get_object().author == self.request.user or (self.request.user.is_authenticated and self.request.user.has_solved(self.get_object().problem))
+
+    def get_title(self):
+        return 'PNOJ: Submission #' + str(self.get_object().pk)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Submission #' + str(self.get_object().pk)
         submission_contenttype = ContentType.objects.get_for_model(models.Submission)
         with self.get_object().source.open() as sourcefile:
             context['source'] = sourcefile.read().decode('ascii').strip()

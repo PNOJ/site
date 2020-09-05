@@ -4,16 +4,18 @@ from django.views.decorators.http import require_POST
 from .. import models
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.contenttypes.models import ContentType
+from . import mixin
 
-class Comment(DetailView):
+class Comment(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.Comment
     context_object_name = 'comment'
     template_name = 'judge/comment.html'
 
+    def get_title(self):
+        return 'PNOJ: Comment #' + str(self.get_object().pk)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Comment #' + str(self.get_object().pk)
         comment_contenttype = ContentType.objects.get_for_model(models.Comment)
         context['comments'] = models.Comment.objects.filter(parent_content_type=comment_contenttype, parent_object_id=self.get_object().pk)
         return context

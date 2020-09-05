@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from . import mixin
 
 class UserProfile(RedirectView):
     permanent = False
@@ -34,22 +35,16 @@ class UserCreate(View):
 
         return render(request, self.template_name, {'form': form})
 
-class UserIndex(ListView):
+class UserIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.User
     context_object_name = 'users'
     template_name = 'judge/user_index.html'
+    title = 'PNOJ: Users'
 
     def get_ordering(self):
         return '-points'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Users'
-        return context
-
-
-class Profile(DetailView):
+class Profile(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
     model = models.User
     context_object_name = 'profile'
     template_name = "judge/profile.html"
@@ -57,16 +52,16 @@ class Profile(DetailView):
     def get_slug_field(self):
         return 'username'
 
+    def get_title(self):
+        return 'PNOJ: User ' + self.get_object().username
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: User ' + self.get_object().username
         user_contenttype = ContentType.objects.get_for_model(models.User)
         context['comments'] = models.Comment.objects.filter(parent_content_type=user_contenttype, parent_object_id=self.get_object().pk)
         return context
 
-
-class UserSubmissions(ListView):
+class UserSubmissions(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     context_object_name = "submissions"
     template_name = 'judge/submission_list.html'
     paginate_by = 50
@@ -78,12 +73,13 @@ class UserSubmissions(ListView):
     def get_ordering(self):
         return '-points'
 
+    def get_title(self):
+        return 'PNOJ: Submissions by User ' + self.user.username
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
         context['author'] = self.kwargs['slug']
         context['purpose'] = 'user_submissions'
-        context['page_title'] = 'PNOJ: Submissions by User ' + self.user.username
         return context
 
 # class ProfileUpdate(UpdateView):
@@ -101,10 +97,11 @@ class UserSubmissions(ListView):
 #         context['page_title'] = 'PNOJ: Update Profile'
 #         return context
 
-class ProfileUpdate(UpdateView):
+class ProfileUpdate(UpdateView, mixin.TitleMixin, mixin.SidebarMixin):
     template_name = 'judge/profile_update_form.html'
     form_class = forms.ProfileUpdateForm
     success_url = reverse_lazy('user_profile')
+    title = 'PNOJ: Update Profile'
 
     def get_object(self):
         return self.request.user
@@ -113,9 +110,3 @@ class ProfileUpdate(UpdateView):
         kwargs = super(UpdateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-        context['page_title'] = 'PNOJ: Update Profile'
-        return context
