@@ -16,7 +16,7 @@ from . import mixin
 class OrganizationIndex(ListView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'organizations'
-    template_name = 'judge/organization_index.html'
+    template_name = 'judge/organization/list.html'
     title = 'PNOJ: Organizations'
 
     def get_ordering(self):
@@ -25,7 +25,7 @@ class OrganizationIndex(ListView, mixin.TitleMixin):
 class Organization(DetailView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'organization'
-    template_name = "judge/organization.html"
+    template_name = "judge/organization/detail.html"
 
     def get_title(self):
         return 'PNOJ: Organization ' + self.get_object().name
@@ -44,7 +44,7 @@ class Organization(DetailView, mixin.TitleMixin):
 class OrganizationMembers(ListView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'users'
-    template_name = 'judge/user_index.html'
+    template_name = 'judge/user/list.html'
 
     def get_ordering(self):
         return '-username'
@@ -63,7 +63,7 @@ class OrganizationMembers(ListView, mixin.TitleMixin):
         return context
 
 class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin):
-    template_name = "judge/organization_form.html"
+    template_name = "judge/organization/form.html"
     model = models.OrganizationRequest
     fields = ['reason']
 
@@ -84,7 +84,7 @@ class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin):
         return context
 
 class OrganizationJoin(LoginRequiredMixin, FormView, mixin.TitleMixin):
-    template_name = "judge/organization_form.html"
+    template_name = "judge/organization/form.html"
     form_class = forms.OrganizationJoinForm
     fields = ['access_code']
 
