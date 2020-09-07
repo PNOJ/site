@@ -3,8 +3,8 @@ import judge.models as models
 from django.contrib.contenttypes.models import ContentType
 from . import mixin
 
-class Index(ListView, mixin.TitleMixin, mixin.SidebarMixin):
-    template_name = 'judge/index.html'
+class Index(ListView, mixin.TitleMixin):
+    template_name = 'judge/info/index.html'
     model = models.BlogPost
     context_object_name = 'posts'
     title = 'PNOJ'
@@ -18,10 +18,10 @@ class Index(ListView, mixin.TitleMixin, mixin.SidebarMixin):
         context['comments'] = models.Comment.objects.order_by('-created_date')[:5]
         return context
 
-class BlogPost(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
+class BlogPost(DetailView, mixin.TitleMixin):
     model = models.BlogPost
     context_object_name = 'post'
-    template_name = "judge/blog_post.html"
+    template_name = "judge/info/blog_post.html"
 
     def get_title(self):
         return 'PNOJ: ' + self.get_object().title

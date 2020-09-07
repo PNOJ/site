@@ -19,35 +19,19 @@ class UserProfile(RedirectView):
         user = self.request.user
         return reverse(self.pattern_name, args=[user.username])
 
-class UserCreate(View):
-    form_class = forms.RegisterForm
-    template_name = 'registration/signup.html'
-
-    def get(self, request):
-        form = self.form_class()
-        return render(request, self.template_name, {'form': form})
-    
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            user = User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'], form.cleaned_data['password1'])
-            return redirect("login")
-
-        return render(request, self.template_name, {'form': form})
-
-class UserIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
+class UserIndex(ListView, mixin.TitleMixin):
     model = models.User
     context_object_name = 'users'
-    template_name = 'judge/user_index.html'
+    template_name = 'judge/user/list.html'
     title = 'PNOJ: Users'
 
     def get_ordering(self):
         return '-points'
 
-class Profile(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
+class Profile(DetailView, mixin.TitleMixin):
     model = models.User
     context_object_name = 'profile'
-    template_name = "judge/profile.html"
+    template_name = "judge/user/detail.html"
 
     def get_slug_field(self):
         return 'username'
@@ -61,9 +45,9 @@ class Profile(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
         context['comments'] = models.Comment.objects.filter(parent_content_type=user_contenttype, parent_object_id=self.get_object().pk)
         return context
 
-class UserSubmissions(ListView, mixin.TitleMixin, mixin.SidebarMixin):
+class UserSubmissions(ListView, mixin.TitleMixin):
     context_object_name = "submissions"
-    template_name = 'judge/submission_list.html'
+    template_name = 'judge/submission/list.html'
     paginate_by = 50
 
     def get_queryset(self):
@@ -82,23 +66,8 @@ class UserSubmissions(ListView, mixin.TitleMixin, mixin.SidebarMixin):
         context['purpose'] = 'user_submissions'
         return context
 
-# class ProfileUpdate(UpdateView):
-#     model = models.User
-#     fields = ['description', 'timezone', 'main_language', 'organizations']
-#     template_name = 'judge/profile_update_form.html'
-#     success_url = reverse_lazy('user_profile')
-
-#     def get_object(self):
-#         return self.request.user
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['sidebar_items'] = models.SidebarItem.objects.order_by('order')
-#         context['page_title'] = 'PNOJ: Update Profile'
-#         return context
-
-class ProfileUpdate(UpdateView, mixin.TitleMixin, mixin.SidebarMixin):
-    template_name = 'judge/profile_update_form.html'
+class ProfileUpdate(UpdateView, mixin.TitleMixin):
+    template_name = 'judge/user/form.html'
     form_class = forms.ProfileUpdateForm
     success_url = reverse_lazy('user_profile')
     title = 'PNOJ: Update Profile'

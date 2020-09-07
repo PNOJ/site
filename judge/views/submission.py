@@ -7,20 +7,20 @@ from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from . import mixin
 
-class SubmissionIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
+class SubmissionIndex(ListView, mixin.TitleMixin):
     model = models.Submission
     context_object_name = 'submissions'
-    template_name = 'judge/submission_list.html'
+    template_name = 'judge/submission/list.html'
     paginate_by = 50
     title = 'PNOJ: Submissions'
 
     def get_ordering(self):
         return '-created' 
 
-class Submission(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
+class Submission(DetailView, mixin.TitleMixin):
     model = models.Submission
     context_object_name = 'submission'
-    template_name = 'judge/submission.html'
+    template_name = 'judge/submission/detail.html'
 
     def get_title(self):
         return 'PNOJ: Submission #' + str(self.get_object().pk)
@@ -32,10 +32,10 @@ class Submission(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
         context['source_viewable'] = self.get_object().author == self.request.user or (self.request.user.is_authenticated and self.request.user.has_solved(self.get_object().problem))
         return context
 
-class SubmissionSource(UserPassesTestMixin, DetailView, mixin.TitleMixin, mixin.SidebarMixin):
+class SubmissionSource(UserPassesTestMixin, DetailView, mixin.TitleMixin):
     model = models.Submission
     context_object_name = 'submission'
-    template_name = 'judge/submission_source.html'
+    template_name = 'judge/submission/source.html'
 
     def test_func(self):
         return self.get_object().author == self.request.user or (self.request.user.is_authenticated and self.request.user.has_solved(self.get_object().problem))

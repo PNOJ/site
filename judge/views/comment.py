@@ -6,10 +6,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.contenttypes.models import ContentType
 from . import mixin
 
-class Comment(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
+class Comment(DetailView, mixin.TitleMixin):
     model = models.Comment
     context_object_name = 'comment'
-    template_name = 'judge/comment.html'
+    template_name = 'judge/info/comment.html'
 
     def get_title(self):
         return 'PNOJ: Comment #' + str(self.get_object().pk)
@@ -23,8 +23,7 @@ class Comment(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
 @require_POST
 @login_required
 def add_comment(request, parent_type, parent_id):
-    if parent_type == 'problem':
-        parent = get_object_or_404(models.Problem, slug=parent_id)
+    if parent_type == 'problem': parent = get_object_or_404(models.Problem, slug=parent_id)
     elif parent_type == 'user':
         parent = get_object_or_404(models.User, username=parent_id)
     elif parent_type == 'submission':

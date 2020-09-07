@@ -1,0 +1,15 @@
+{% extends 'judge/base_comment.html' %}
+{% load link_tags %}
+{% load humanize %}
+{% load markdown_tags %}
+{% load tz %}
+
+{% block main %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ post.title }}</h5>
+        <h6 class="card-subtitle mb-3 text-muted">{{ post.author.all|join:", " }} posted {{ post.created|naturaltime }}</h6>
+        <p class="card-text">{{ post.text|markdown }}</p>
+    </div>
+</div>
+{% endblock %}

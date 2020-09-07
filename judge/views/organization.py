@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.db.models import Count
 from . import mixin
 
-class OrganizationIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
+class OrganizationIndex(ListView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'organizations'
     template_name = 'judge/organization_index.html'
@@ -22,7 +22,7 @@ class OrganizationIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
     def get_ordering(self):
         return '-name'
 
-class Organization(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
+class Organization(DetailView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'organization'
     template_name = "judge/organization.html"
@@ -41,7 +41,7 @@ class Organization(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
             context['organization_requests'] = []
         return context
 
-class OrganizationMembers(ListView, mixin.TitleMixin, mixin.SidebarMixin):
+class OrganizationMembers(ListView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'users'
     template_name = 'judge/user_index.html'
@@ -62,7 +62,7 @@ class OrganizationMembers(ListView, mixin.TitleMixin, mixin.SidebarMixin):
         context['organization'] = self.organization
         return context
 
-class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin, mixin.SidebarMixin):
+class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin):
     template_name = "judge/organization_form.html"
     model = models.OrganizationRequest
     fields = ['reason']
@@ -83,7 +83,7 @@ class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin, mixi
         context['organization'] = self.get_object()
         return context
 
-class OrganizationJoin(LoginRequiredMixin, FormView, mixin.TitleMixin, mixin.SidebarMixin):
+class OrganizationJoin(LoginRequiredMixin, FormView, mixin.TitleMixin):
     template_name = "judge/organization_form.html"
     form_class = forms.OrganizationJoinForm
     fields = ['access_code']

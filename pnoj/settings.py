@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'captcha',
+    'crispy_forms',
 ]
 
 
@@ -65,7 +66,9 @@ ROOT_URLCONF = 'pnoj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -211,7 +214,23 @@ AUTHENTICATION_BACKENDS = (
 RECAPTCHA_PUBLIC_KEY = '<your recaptcha public key>'
 RECAPTCHA_PRIVATE_KEY = '<your recaptcha private key>'
 
+GOOGLE_ANALYTICS_ON_ALL_VIEWS = False
+GOOGLE_ANALYTICS_TRACKING_ID = None
+
 ACCOUNT_FORMS = {'signup': 'judge.forms.PNOJSignupForm'}
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+TOS_URL = '/tos'
+
+# NavBar settings
+
+NAVBAR = {
+    'Problems': '/problems/',
+    'Submissions': '/submissions/',
+    'Users': '/users/',
+    'Organizations': '/organizations/',
+}
 
 try:
     from pnoj.config.config import *

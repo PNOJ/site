@@ -20,19 +20,19 @@ from . import mixin
 
 logger = logging.getLogger('django')
 
-class ProblemIndex(ListView, mixin.TitleMixin, mixin.SidebarMixin):
+class ProblemIndex(ListView, mixin.TitleMixin):
     model = models.Problem
     context_object_name = 'problems'
-    template_name = 'judge/problem_index.html'
+    template_name = 'judge/problem/list.html'
     title = 'PNOJ: Problems'
 
     def get_ordering(self):
         return 'name'
 
-class Problem(DetailView, mixin.TitleMixin, mixin.SidebarMixin):
+class Problem(DetailView, mixin.TitleMixin):
     model = models.Problem
     context_object_name = 'problem'
-    template_name = "judge/problem.html"
+    template_name = "judge/problem/detail.html"
 
     def get_title(self):
         return 'PNOJ: ' + self.get_object().name
@@ -56,8 +56,8 @@ def create_judge_task(submission_id, problem_file_url, submission_file_url, lang
     response.raise_for_status()
 
 @method_decorator(login_required, name='dispatch')
-class ProblemSubmit(CreateView, mixin.TitleMixin, mixin.SidebarMixin):
-    template_name = 'judge/problem_submit.html'
+class ProblemSubmit(CreateView, mixin.TitleMixin):
+    template_name = 'judge/problem/submit.html'
     model = models.Submission
     fields = ('source', 'language')
 
@@ -177,7 +177,7 @@ def passthrough(request, uuid):
     return HttpResponse("OK")
 
 
-class ProblemAllSubmissions(ListView, mixin.TitleMixin, mixin.SidebarMixin):
+class ProblemAllSubmissions(ListView, mixin.TitleMixin):
     context_object_name = "submissions"
     template_name = 'judge/submission_list.html'
     paginate_by = 50
@@ -198,7 +198,7 @@ class ProblemAllSubmissions(ListView, mixin.TitleMixin, mixin.SidebarMixin):
         context['problem'] = self.problem
         return context
 
-class ProblemBestSubmissions(ListView, mixin.TitleMixin, mixin.SidebarMixin):
+class ProblemBestSubmissions(ListView, mixin.TitleMixin):
     context_object_name = "submissions"
     template_name = 'judge/submission_list.html'
     paginate_by = 50
