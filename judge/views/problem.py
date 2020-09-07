@@ -93,7 +93,7 @@ class ProblemSubmit(CreateView, mixin.TitleMixin):
         return super().form_valid(form)
 
     def get_object(self):
-        models.Problem.objects.get(slug=self.kwargs['slug'])
+        return models.Problem.objects.get(slug=self.kwargs['slug'])
 
     def get_title(self):
         return 'PNOJ: Submit to ' + self.get_object().name

@@ -1,5 +1,6 @@
 {% extends 'judge/base.html' %}
 {% load link_tags %}
+{% load crispy_forms_tags %}
 
 {% block main %}
 <div class="card">
@@ -7,7 +8,7 @@
         <form method="post">
             <h5 class="card-title">Join {{ organization.slug|organization }}</h5>
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ form|crispy }}
             <button type="submit" class="btn btn-primary mr-2">Submit</button>
             <a href="{{ organization.slug|organization_url }}" class="btn btn-primary" role="button" aria-pressed="true">Cancel</a>
         </form>

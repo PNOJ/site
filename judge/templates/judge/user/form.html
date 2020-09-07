@@ -1,4 +1,5 @@
 {% extends 'judge/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block main %}
 <div class="card">
@@ -6,7 +7,7 @@
         <form method="post">
             <h5 class="card-title">Edit profile</h5>
             {% csrf_token %}
-            {{ form.as_ul }}
+            {{ form|crispy }}
             <button type="submit" class="btn btn-primary mr-2">Submit</button>
             <a href="{% url 'user_profile' %}" class="btn btn-primary" role="button" aria-pressed="true">Cancel</a>
         </form>
