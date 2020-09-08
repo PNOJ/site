@@ -4,8 +4,9 @@
 {% block main %}
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Organizations</h5>
-        {% include 'judge/organization/snippet/table.html' %}
+        <h5 class="card-title">Members of {{ organization.slug|organization }}</h5>
+        {% include 'judge/user/snippet/table.html' %}
     </div>
 </div>
 {% endblock %}
+

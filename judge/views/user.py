@@ -47,7 +47,7 @@ class UserDetail(DetailView, mixin.TitleMixin):
 
 class UserSubmissions(ListView, mixin.TitleMixin):
     context_object_name = "submissions"
-    template_name = 'judge/submission/list.html'
+    template_name = 'judge/user/submission.html'
     paginate_by = 50
 
     def get_queryset(self):
@@ -63,7 +63,6 @@ class UserSubmissions(ListView, mixin.TitleMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['author'] = self.kwargs['slug']
-        context['purpose'] = 'user_submissions'
         return context
 
 class UserEdit(UpdateView, mixin.TitleMixin):

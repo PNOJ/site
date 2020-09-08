@@ -44,7 +44,7 @@ class OrganizationDetail(DetailView, mixin.TitleMixin):
 class OrganizationMembers(ListView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'users'
-    template_name = 'judge/user/list.html'
+    template_name = 'judge/organization/member.html'
 
     def get_ordering(self):
         return '-username'
@@ -58,7 +58,6 @@ class OrganizationMembers(ListView, mixin.TitleMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['purpose'] = 'organization_members'
         context['organization'] = self.organization
         return context
 

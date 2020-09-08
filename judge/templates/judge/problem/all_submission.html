@@ -1,0 +1,15 @@
+{% extends 'judge/base.html' %}
+{% load link_tags %}
+{% load color_tags %}
+
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">All Submissions for {{ problem.slug|problem }}</h5>
+
+        {% include 'judge/submission/snippet/table.html' %}
+
+        {% include 'paginator/snippet.html' %}
+    </div>
+</div>
+{% endblock %}

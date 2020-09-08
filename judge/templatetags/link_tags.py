@@ -18,6 +18,13 @@ def user(username, postfix=''):
     return mark_safe('<a href="{0}{1}">{2}</a>'.format(url, postfix, username))
 
 @register.filter
+def users(usernames, postfix=''):
+    users_string = ""
+    for username in usernames:
+        users_string += user(username, postfix) + ", "
+    return mark_safe(users_string[:-2])
+
+@register.filter
 def problem_url(slug):
     return reverse('problem_detail', args=[slug])
  

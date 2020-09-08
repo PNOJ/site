@@ -5,38 +5,7 @@
 <div class="card">
     <div class="card-body">
         <h5 class="card-title">Problems</h5>
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Categories</th>
-                    <th scope="col">Types</th>
-                    <th scope="col">Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for i in problems %}
-                {% if user.is_authenticated %}
-                <tr class="table-{{ i|problem_color:user }}">
-                {% else %}
-                <tr>
-                {% endif %}
-                    <td><a href={% url 'problem_detail' i.slug %}>{{ i.name }}</a></td>
-                    {% if i.category.all %}
-                    <td>{{ i.category.all|join:", " }}</td>
-                    {% else %}
-                    <td class="font-italic">Uncategorized</td>
-                    {% endif %}
-                    {% if i.problem_type.all %}
-                    <td>{{ i.problem_type.all|join:", " }}</td>
-                    {% else %}
-                    <td class="font-italic">-</td>
-                    {% endif %}
-                    <td>{{ i.points }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% include 'judge/problem/snippet/table.html' %}
     </div>
 </div>
 {% endblock %}

@@ -42,6 +42,6 @@ class OrganizationJoinForm(forms.Form):
     def clean_access_code(self):
         if self.cleaned_data['access_code'] != self.organization.access_code:
             raise ValidationError(
-                ('Incorrect Access Token'),
+                ('Incorrect Access Code'),
                 code='forbidden',
             )

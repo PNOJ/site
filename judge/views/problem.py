@@ -179,7 +179,7 @@ def passthrough(request, uuid):
 
 class ProblemAllSubmissions(ListView, mixin.TitleMixin):
     context_object_name = "submissions"
-    template_name = 'judge/submission/list.html'
+    template_name = 'judge/problem/all_submission.html'
     paginate_by = 50
 
     def get_queryset(self):
@@ -194,13 +194,12 @@ class ProblemAllSubmissions(ListView, mixin.TitleMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['purpose'] = 'problem_all_submissions'
         context['problem'] = self.problem
         return context
 
 class ProblemBestSubmissions(ListView, mixin.TitleMixin):
     context_object_name = "submissions"
-    template_name = 'judge/submission/list.html'
+    template_name = 'judge/problem/best_submission.html'
     paginate_by = 50
 
     def get_queryset(self):
@@ -215,6 +214,5 @@ class ProblemBestSubmissions(ListView, mixin.TitleMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['purpose'] = 'problem_best_submissions'
         context['problem'] = self.problem
         return context

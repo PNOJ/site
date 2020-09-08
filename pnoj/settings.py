@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django_s3_storage',
-    # 'django_registration',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -132,16 +131,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'judge.User'
 
-LOGIN_REDIRECT_URL = '/accounts/profile'
-
-LOGOUT_REDIRECT_URL = "/"
-
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = 'emails'
-
-SITE_ID = 1
+# Logging settings
 
 LOGGING = {
     'version': 1,
@@ -162,7 +153,41 @@ LOGGING = {
 }
 
 
+# Auth settings
+
+AUTH_USER_MODEL = 'judge.User'
+
+LOGIN_REDIRECT_URL = '/accounts/profile'
+
+LOGOUT_REDIRECT_URL = "/"
+
+# ACCOUNT_ACTIVATION_DAYS = 7
+# REGISTRATION_OPEN = True
+# REGISTRATION_SALT = '<registration salt here>'
+
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+ACCOUNT_FORMS = {'signup': 'judge.forms.PNOJSignupForm'}
+
+tos_url = '/tos'
+
+
+# Email settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+
+EMAIL_FILE_PATH = 'emails'
+
 EMAIL_BACKEND = '<your email backend>'
+
 
 # S3 STORAGE CONFIGURATION
 # FOLLOW https://github.com/etianen/django-s3-storage
@@ -178,6 +203,31 @@ STATICFILES_STORAGE = ""
 AWS_S3_BUCKET_NAME_STATIC = ""
 AWS_S3_BUCKET_AUTH_STATIC = False
 AWS_S3_ENDPOINT_URL_STATIC = ""
+
+
+# reCAPTCHA settings
+
+RECAPTCHA_PUBLIC_KEY = '<your recaptcha public key>'
+RECAPTCHA_PRIVATE_KEY = '<your recaptcha private key>'
+
+
+# Google Analytics settings
+
+GOOGLE_ANALYTICS_ON_ALL_VIEWS = False
+GOOGLE_ANALYTICS_TRACKING_ID = None
+
+
+# NavBar settings
+
+NAVBAR = {
+    'Problems': '/problems/',
+    'Submissions': '/submissions/',
+    'Users': '/users/',
+    'Organizations': '/organizations/',
+}
+
+
+# Judge settings
 
 enabled_languages = [
     'python3',
@@ -196,42 +246,14 @@ judge = {
     "token": "<your judge teller token>",
 }
 
-tos_url = "https://wiki.oj.paullee.dev/Judge:Terms"
 
-# ACCOUNT_ACTIVATION_DAYS = 7
-# REGISTRATION_OPEN = True
-# REGISTRATION_SALT = '<registration salt here>'
+# Other settings
 
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
-
-RECAPTCHA_PUBLIC_KEY = '<your recaptcha public key>'
-RECAPTCHA_PRIVATE_KEY = '<your recaptcha private key>'
-
-GOOGLE_ANALYTICS_ON_ALL_VIEWS = False
-GOOGLE_ANALYTICS_TRACKING_ID = None
-
-ACCOUNT_FORMS = {'signup': 'judge.forms.PNOJSignupForm'}
+SITE_ID = 1
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-TOS_URL = '/tos'
-
-# NavBar settings
-
-NAVBAR = {
-    'Problems': '/problems/',
-    'Submissions': '/submissions/',
-    'Users': '/users/',
-    'Organizations': '/organizations/',
-}
+SILENCED_SYSTEM_CHECKS = ['urls.W002']
 
 try:
     from pnoj.config.config import *

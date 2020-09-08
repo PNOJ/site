@@ -4,31 +4,9 @@
 {% block main %}
 <div class="card">
     <div class="card-body">
-        {% if purpose == 'organization_members' %}
-        <h5 class="card-title">Members of {{ organization.slug|organization }}</h5>
-        {% else %}
         <h5 class="card-title">Users</h5>
-        {% endif %}
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th scope="col">Rank</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Points</th>
-                    <th scope="col">Problems</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for i in users %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td><a href={% url 'user_detail' i.username %}>{{ i.username }}</a></td>
-                    <td>{{ i.points|floatformat }}</td>
-                    <td>{{ i.num_problems_solved }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% include 'judge/user/snippet/table.html' %}
     </div>
 </div>
 {% endblock %}
+
