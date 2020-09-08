@@ -21,7 +21,7 @@
                 {% else %}
                 <tr>
                 {% endif %}
-                    <td><a href={% url 'problem' i.slug %}>{{ i.name }}</a></td>
+                    <td><a href={% url 'problem_detail' i.slug %}>{{ i.name }}</a></td>
                     {% if i.category.all %}
                     <td>{{ i.category.all|join:", " }}</td>
                     {% else %}

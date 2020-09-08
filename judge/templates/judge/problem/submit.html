@@ -4,7 +4,7 @@
 {% block main %}
 <div class="card submit-card">
     <div class="card-body">
-        <h5 class="card-title">Submit solution to <a href="{% url 'problem' problem.slug %}">{{ problem.name }}</a></h5>
+        <h5 class="card-title">Submit solution to <a href="{% url 'problem_detail' problem.slug %}">{{ problem.name }}</a></h5>
         <div class="card my-3">
             <div class="card-body editor-container">
                 <div id="editor"></div>                
@@ -35,7 +35,7 @@
 {% endblock %}
 
 {% block navbar %}
-<a href="{% url 'problem' problem.slug %}" class="btn btn-primary ml-3 my-auto" role="button" aria-pressed="true">Cancel</a>
+<a href="{% url 'problem_detail' problem.slug %}" class="btn btn-primary ml-3 my-auto" role="button" aria-pressed="true">Cancel</a>
 {% endblock %}
 
 {% block script %}

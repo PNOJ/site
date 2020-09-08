@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.db.models import Count
 from . import mixin
 
-class OrganizationIndex(ListView, mixin.TitleMixin):
+class OrganizationList(ListView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'organizations'
     template_name = 'judge/organization/list.html'
@@ -22,7 +22,7 @@ class OrganizationIndex(ListView, mixin.TitleMixin):
     def get_ordering(self):
         return '-name'
 
-class Organization(DetailView, mixin.TitleMixin):
+class OrganizationDetail(DetailView, mixin.TitleMixin):
     model = models.Organization
     context_object_name = 'organization'
     template_name = "judge/organization/detail.html"

@@ -7,7 +7,7 @@ from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from . import mixin
 
-class SubmissionIndex(ListView, mixin.TitleMixin):
+class SubmissionList(ListView, mixin.TitleMixin):
     model = models.Submission
     context_object_name = 'submissions'
     template_name = 'judge/submission/list.html'
@@ -17,7 +17,7 @@ class SubmissionIndex(ListView, mixin.TitleMixin):
     def get_ordering(self):
         return '-created' 
 
-class Submission(DetailView, mixin.TitleMixin):
+class SubmissionDetail(DetailView, mixin.TitleMixin):
     model = models.Submission
     context_object_name = 'submission'
     template_name = 'judge/submission/detail.html'

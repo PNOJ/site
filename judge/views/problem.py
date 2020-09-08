@@ -20,7 +20,7 @@ from . import mixin
 
 logger = logging.getLogger('django')
 
-class ProblemIndex(ListView, mixin.TitleMixin):
+class ProblemList(ListView, mixin.TitleMixin):
     model = models.Problem
     context_object_name = 'problems'
     template_name = 'judge/problem/list.html'
@@ -29,7 +29,7 @@ class ProblemIndex(ListView, mixin.TitleMixin):
     def get_ordering(self):
         return 'name'
 
-class Problem(DetailView, mixin.TitleMixin):
+class ProblemDetail(DetailView, mixin.TitleMixin):
     model = models.Problem
     context_object_name = 'problem'
     template_name = "judge/problem/detail.html"
@@ -179,7 +179,7 @@ def passthrough(request, uuid):
 
 class ProblemAllSubmissions(ListView, mixin.TitleMixin):
     context_object_name = "submissions"
-    template_name = 'judge/submission_list.html'
+    template_name = 'judge/submission/list.html'
     paginate_by = 50
 
     def get_queryset(self):
@@ -200,7 +200,7 @@ class ProblemAllSubmissions(ListView, mixin.TitleMixin):
 
 class ProblemBestSubmissions(ListView, mixin.TitleMixin):
     context_object_name = "submissions"
-    template_name = 'judge/submission_list.html'
+    template_name = 'judge/submission/list.html'
     paginate_by = 50
 
     def get_queryset(self):

@@ -10,16 +10,16 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from . import mixin
 
-class UserProfile(RedirectView):
+class UserDetailRedirect(RedirectView):
     permanent = False
     query_string = False
-    pattern_name = "profile"
+    pattern_name = "user_detail"
 
     def get_redirect_url(self, *args, **kwargs):
         user = self.request.user
         return reverse(self.pattern_name, args=[user.username])
 
-class UserIndex(ListView, mixin.TitleMixin):
+class UserList(ListView, mixin.TitleMixin):
     model = models.User
     context_object_name = 'users'
     template_name = 'judge/user/list.html'
@@ -28,7 +28,7 @@ class UserIndex(ListView, mixin.TitleMixin):
     def get_ordering(self):
         return '-points'
 
-class Profile(DetailView, mixin.TitleMixin):
+class UserDetail(DetailView, mixin.TitleMixin):
     model = models.User
     context_object_name = 'profile'
     template_name = "judge/user/detail.html"
@@ -66,7 +66,7 @@ class UserSubmissions(ListView, mixin.TitleMixin):
         context['purpose'] = 'user_submissions'
         return context
 
-class ProfileUpdate(UpdateView, mixin.TitleMixin):
+class UserEdit(UpdateView, mixin.TitleMixin):
     template_name = 'judge/user/form.html'
     form_class = forms.ProfileUpdateForm
     success_url = reverse_lazy('user_profile')

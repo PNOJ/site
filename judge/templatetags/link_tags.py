@@ -10,7 +10,7 @@ register = template.Library()
  
 @register.filter
 def user_url(username):
-    return reverse('profile', args=[username])
+    return reverse('user_detail', args=[username])
  
 @register.filter
 def user(username, postfix=''):
@@ -19,7 +19,7 @@ def user(username, postfix=''):
 
 @register.filter
 def problem_url(slug):
-    return reverse('problem', args=[slug])
+    return reverse('problem_detail', args=[slug])
  
 @register.filter
 def problem(slug, postfix=''):
@@ -29,7 +29,7 @@ def problem(slug, postfix=''):
 
 @register.filter
 def submission_url(pk):
-    return reverse('submission', args=[pk])
+    return reverse('submission_detail', args=[pk])
  
 @register.filter
 def submission(pk, postfix=''):
@@ -88,7 +88,7 @@ def post(slug, postfix=''):
 
 @register.filter
 def organization_url(slug):
-    return reverse('organization', args=[slug])
+    return reverse('organization_detail', args=[slug])
  
 @register.filter
 def organization(slug, postfix=''):
