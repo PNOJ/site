@@ -99,7 +99,7 @@ class OrganizationRequest(models.Model):
         return reverse('organization', args=[self.organization.slug])
 
     def __str__(self):
-        return f'Request to join {self.user.username} ({self.pk})'
+        return f'Request to join {self.organization.name} ({self.pk})'
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

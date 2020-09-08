@@ -8,8 +8,7 @@ from django.db.models import Q
 
 User = get_user_model()
 
-# Register your models here.
-
+# Register your models here.  
 class ProblemAdmin(admin.ModelAdmin):
     fields = ['problem_file', 'slug']
 
@@ -47,7 +46,7 @@ class OrganizationAdmin(admin.ModelAdmin):
             if obj == None:
                 return True
             else:
-                return request.user in obj.admins.all() or request.user == obj.owner
+                return request.user in obj.admins.all() or request.user == obj.owner or request.user.is_superuser
         return False
 
     def has_change_permission(self, request, obj=None):
@@ -55,7 +54,7 @@ class OrganizationAdmin(admin.ModelAdmin):
             if obj == None:
                 return True
             else:
-                return request.user == obj.owner
+                return request.user == obj.owner or request.user.is_superuser
         return False
 
     def has_module_permission(self, request):
@@ -73,6 +72,7 @@ class OrganizationAdmin(admin.ModelAdmin):
 class OrganizationRequestAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'user', 'organization', 'created', 'status', 'reviewed']
     list_filter = ['organization', 'status']
+    readonly_fields = ['user', 'organization', 'created', 'reason']
 
     def has_given_permission(self, request, obj, permission):
         if request.user.has_perm(permission):
@@ -86,7 +86,10 @@ class OrganizationRequestAdmin(admin.ModelAdmin):
         return self.has_given_permission(request, obj, 'judge.view_organizationrequest')
 
     def has_change_permission(self, request, obj=None):
-        return self.has_given_permission(request, obj, 'judge.change_organizationrequest')
+        status = self.has_given_permission(request, obj, 'judge.change_organizationrequest')
+        if obj != None:
+            return status and not obj.reviewed()
+        return status
 
     def has_module_permission(self, request):
         perms = ['judge.add_organizationrequest', 'judge.view_organizationrequest', 'judge.change_organizationrequest', 'judge.delete_organizationrequest']
@@ -99,7 +102,6 @@ class OrganizationRequestAdmin(admin.ModelAdmin):
         return qs.filter(organization__admins=request.user)
 
 admin.site.register(User)
-admin.site.register(models.SidebarItem)
 admin.site.register(models.Problem, ProblemAdmin)
 admin.site.register(models.Submission)
 admin.site.register(models.ProblemCategory)
