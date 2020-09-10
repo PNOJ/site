@@ -20,7 +20,7 @@ class PNOJSignupForm(SignupForm):
 class ProfileUpdateForm(ModelForm):
     class Meta:
         model = User
-        fields = ['description', 'timezone', 'main_language', 'organizations']
+        fields = ['description', 'timezone', 'main_language', 'payment_pointer', 'organizations']
         widgets = {
             'organizations': forms.CheckboxSelectMultiple()
         }
@@ -41,7 +41,4 @@ class OrganizationJoinForm(forms.Form):
 
     def clean_access_code(self):
         if self.cleaned_data['access_code'] != self.organization.access_code:
-            raise ValidationError(
-                ('Incorrect Access Code'),
-                code='forbidden',
-            )
+            raise ValidationError('Incorrect Access Code', code='forbidden')

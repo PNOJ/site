@@ -6,13 +6,19 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.contenttypes.models import ContentType
 from . import mixin
 
-class Comment(DetailView, mixin.TitleMixin):
+class Comment(DetailView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Comment
     context_object_name = 'comment'
     template_name = 'judge/info/comment.html'
 
     def get_title(self):
         return 'PNOJ: Comment #' + str(self.get_object().pk)
+
+    def get_description(self):
+        return self.get_object().text
+
+    def get_author(self):
+        return [self.get_object().author]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

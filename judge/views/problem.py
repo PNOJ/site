@@ -20,7 +20,7 @@ from . import mixin
 
 logger = logging.getLogger('django')
 
-class ProblemList(ListView, mixin.TitleMixin):
+class ProblemList(ListView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Problem
     context_object_name = 'problems'
     template_name = 'judge/problem/list.html'
@@ -29,13 +29,19 @@ class ProblemList(ListView, mixin.TitleMixin):
     def get_ordering(self):
         return 'name'
 
-class ProblemDetail(DetailView, mixin.TitleMixin):
+class ProblemDetail(DetailView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Problem
     context_object_name = 'problem'
     template_name = "judge/problem/detail.html"
 
     def get_title(self):
         return 'PNOJ: ' + self.get_object().name
+
+    def get_description(self):
+        return self.get_object().description
+
+    def get_author(self):
+        return self.get_object().author.all()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -56,7 +62,7 @@ def create_judge_task(submission_id, problem_file_url, submission_file_url, lang
     response.raise_for_status()
 
 @method_decorator(login_required, name='dispatch')
-class ProblemSubmit(CreateView, mixin.TitleMixin):
+class ProblemSubmit(CreateView, mixin.TitleMixin, mixin.MetaMixin):
     template_name = 'judge/problem/submit.html'
     model = models.Submission
     fields = ('source', 'language')
@@ -177,7 +183,7 @@ def passthrough(request, uuid):
     return HttpResponse("OK")
 
 
-class ProblemAllSubmissions(ListView, mixin.TitleMixin):
+class ProblemAllSubmissions(ListView, mixin.TitleMixin, mixin.MetaMixin):
     context_object_name = "submissions"
     template_name = 'judge/problem/all_submission.html'
     paginate_by = 50
@@ -197,7 +203,7 @@ class ProblemAllSubmissions(ListView, mixin.TitleMixin):
         context['problem'] = self.problem
         return context
 
-class ProblemBestSubmissions(ListView, mixin.TitleMixin):
+class ProblemBestSubmissions(ListView, mixin.TitleMixin, mixin.MetaMixin):
     context_object_name = "submissions"
     template_name = 'judge/problem/best_submission.html'
     paginate_by = 50

@@ -10,7 +10,7 @@
         {% if organization.description == "" %}
         <p class="font-italic">This organization has not shared any information.</p>
         {% else %}
-        {{ organization.description|markdown|linebreaksbr }}
+        {{ organization.description|markdown }}
         {% endif %}
     </div>
     <ul class="list-group list-group-flush">

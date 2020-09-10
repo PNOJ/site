@@ -182,10 +182,6 @@ tos_url = '/tos'
 
 # Email settings
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-
-EMAIL_FILE_PATH = 'emails'
-
 EMAIL_BACKEND = '<your email backend>'
 
 
@@ -213,18 +209,38 @@ RECAPTCHA_PRIVATE_KEY = '<your recaptcha private key>'
 
 # Google Analytics settings
 
-GOOGLE_ANALYTICS_ON_ALL_VIEWS = False
-GOOGLE_ANALYTICS_TRACKING_ID = None
+google_analytics_on_all_views = False
+google_analytics_tracking_id = None
 
 
 # NavBar settings
 
-NAVBAR = {
+navbar = {
     'Problems': '/problems/',
     'Submissions': '/submissions/',
     'Users': '/users/',
     'Organizations': '/organizations/',
 }
+
+
+# Meta tag settings
+
+description = 'PNOJ is a open-source online judge for competitive programmers to practice solving programming problems.'
+keywords = [
+    'PNOJ',
+    'online',
+    'judge',
+    'online judge',
+    'grader',
+    'open source',
+    'competitive',
+    'programming',
+    'competitive programming',
+    'problem solving',
+    'problem',
+]
+scheme = 'https'
+payment_pointers = [] # Your Interledger Payment Pointers for Web Monetization
 
 
 # Judge settings

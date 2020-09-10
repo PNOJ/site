@@ -9,7 +9,7 @@
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky" id="navbar">
                 <ul class="nav flex-column">
-                    {% settings_value "NAVBAR" as navbar %}
+                    {% settings_value "navbar" as navbar %}
                     {% for name, link in navbar.items %}
                     <li class="nav-item"><a class="nav-link" href="{{ link }}">{{ name }}</a></li>
                     {% endfor %}
@@ -92,10 +92,42 @@
         });
     });
 </script>
-{% settings_value "GOOGLE_ANALYTICS_ON_ALL_VIEWS" as ganalytics_allviews %}
+{% settings_value "google_analytics_on_all_views" as ganalytics_allviews %}
 {% if not ganalytics_allviews %}
 {% include "ganalytics/snippet.html" %}
 {% endif %}
 {% block deps %}
+{% endblock %}
+{% endblock %}
+
+{% block meta %}
+<meta property="og:title" content="{{ page_title }}" />
+<meta name="twitter:title" content="{{ page_title }}" />
+
+<meta property="og:site_name" content="{{ site.name|safe }}">
+
+<meta property="og:type" content="{{ og_type }}" />
+<meta name="twitter:card" content="summary" />
+
+<link rel="canonical" href="{% settings_value "scheme" %}://{{ site.domain }}{{ request.get_full_path }}">
+<meta property="og:url" content="{% settings_value "scheme" %}://{{ site.domain }}{{ request.get_full_path }}">
+
+<meta name="description" content="{{ meta_description }}">
+<meta property="og:description" content="{{ meta_description }}">
+<meta name="twitter:description" content="{{ meta_description }}" />
+
+{% settings_value "keywords" as keywords %}
+<meta name="keywords" content="{{ keywords|join:", " }}">
+
+{% if og_image %}
+<meta property="og:image" content="{{ og_image }}">
+<meta name="twitter:image" content="{{ og_image }}" />
+{% endif %}
+
+{% if meta_payment_pointer %}
+<meta name="monetization" content="{{ meta_payment_pointer }}">
+{% endif %}
+
+{% block othermeta %}
 {% endblock %}
 {% endblock %}

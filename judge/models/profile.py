@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from .choices import language_choices, timezone_choices, organization_request_status_choices
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
+from django.urls import reverse
 
 # Create your models here.
 class User(AbstractUser):
@@ -18,6 +20,11 @@ class User(AbstractUser):
 
     points = models.FloatField(default=0)
     num_problems_solved = models.PositiveIntegerField(default=0)
+
+    payment_pointer = models.CharField(max_length=300, validators=[RegexValidator(regex=r'\$.*\.(?:.*)+?(?:/.*)?', message='Enter a payment pointer')], blank=True)
+
+    def get_absolute_url(self):
+        return reverse('user_detail', args=[self.username])
 
     def has_attempted(self, problem):
         queryset = self.submission_set.filter(problem=problem)

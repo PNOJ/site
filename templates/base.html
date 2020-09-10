@@ -2,14 +2,19 @@
 {% load settings_tags %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns/{{ og_type }}#">
     <head>
-        <title>{% block title %}{% endblock %}</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}{% endblock %}</title>
+
+        {% block meta %}
+        {% endblock %}
+        
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-        {% settings_value "GOOGLE_ANALYTICS_ON_ALL_VIEWS" as ganalytics_allviews %}
+        {% settings_value "google_analytics_on_all_views" as ganalytics_allviews %}
         {% if ganalytics_allviews %}
         {% include "ganalytics/snippet.html" %}
         {% endif %}

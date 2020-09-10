@@ -7,7 +7,7 @@ from django.core.cache import cache
 from django.http import JsonResponse, HttpResponse
 from . import mixin
 
-class SubmissionList(ListView, mixin.TitleMixin):
+class SubmissionList(ListView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Submission
     context_object_name = 'submissions'
     template_name = 'judge/submission/list.html'
@@ -17,13 +17,16 @@ class SubmissionList(ListView, mixin.TitleMixin):
     def get_ordering(self):
         return '-created' 
 
-class SubmissionDetail(DetailView, mixin.TitleMixin):
+class SubmissionDetail(DetailView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Submission
     context_object_name = 'submission'
     template_name = 'judge/submission/detail.html'
 
     def get_title(self):
         return 'PNOJ: Submission #' + str(self.get_object().pk)
+
+    def get_author(self):
+        return [self.get_object().author]
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,7 +35,7 @@ class SubmissionDetail(DetailView, mixin.TitleMixin):
         context['source_viewable'] = self.get_object().author == self.request.user or (self.request.user.is_authenticated and self.request.user.has_solved(self.get_object().problem))
         return context
 
-class SubmissionSource(UserPassesTestMixin, DetailView, mixin.TitleMixin):
+class SubmissionSource(UserPassesTestMixin, DetailView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Submission
     context_object_name = 'submission'
     template_name = 'judge/submission/source.html'
@@ -42,6 +45,9 @@ class SubmissionSource(UserPassesTestMixin, DetailView, mixin.TitleMixin):
 
     def get_title(self):
         return 'PNOJ: Submission #' + str(self.get_object().pk)
+
+    def get_author(self):
+        return [self.get_object().author]
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

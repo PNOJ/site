@@ -19,10 +19,8 @@ def user(username, postfix=''):
 
 @register.filter
 def users(usernames, postfix=''):
-    users_string = ""
-    for username in usernames:
-        users_string += user(username, postfix) + ", "
-    return mark_safe(users_string[:-2])
+    users_string = ', '.join([user(username, postfix) for username in usernames])
+    return mark_safe(users_string)
 
 @register.filter
 def problem_url(slug):

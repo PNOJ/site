@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.db.models import Count
 from . import mixin
 
-class OrganizationList(ListView, mixin.TitleMixin):
+class OrganizationList(ListView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Organization
     context_object_name = 'organizations'
     template_name = 'judge/organization/list.html'
@@ -22,13 +22,16 @@ class OrganizationList(ListView, mixin.TitleMixin):
     def get_ordering(self):
         return '-name'
 
-class OrganizationDetail(DetailView, mixin.TitleMixin):
+class OrganizationDetail(DetailView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Organization
     context_object_name = 'organization'
     template_name = "judge/organization/detail.html"
 
     def get_title(self):
         return 'PNOJ: Organization ' + self.get_object().name
+
+    def get_description(self):
+        return self.get_object().description
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,7 +44,7 @@ class OrganizationDetail(DetailView, mixin.TitleMixin):
             context['organization_requests'] = []
         return context
 
-class OrganizationMembers(ListView, mixin.TitleMixin):
+class OrganizationMembers(ListView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.Organization
     context_object_name = 'users'
     template_name = 'judge/organization/member.html'
@@ -61,7 +64,7 @@ class OrganizationMembers(ListView, mixin.TitleMixin):
         context['organization'] = self.organization
         return context
 
-class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin):
+class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin, mixin.MetaMixin):
     template_name = "judge/organization/form.html"
     model = models.OrganizationRequest
     fields = ['reason']
@@ -82,7 +85,7 @@ class OrganizationRequest(LoginRequiredMixin, CreateView, mixin.TitleMixin):
         context['organization'] = self.get_object()
         return context
 
-class OrganizationJoin(LoginRequiredMixin, FormView, mixin.TitleMixin):
+class OrganizationJoin(LoginRequiredMixin, FormView, mixin.TitleMixin, mixin.MetaMixin):
     template_name = "judge/organization/form.html"
     form_class = forms.OrganizationJoinForm
     fields = ['access_code']

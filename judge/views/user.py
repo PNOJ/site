@@ -19,19 +19,20 @@ class UserDetailRedirect(RedirectView):
         user = self.request.user
         return reverse(self.pattern_name, args=[user.username])
 
-class UserList(ListView, mixin.TitleMixin):
+class UserList(ListView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.User
     context_object_name = 'users'
     template_name = 'judge/user/list.html'
     title = 'PNOJ: Users'
 
     def get_ordering(self):
-        return '-points'
+        return '-points' 
 
-class UserDetail(DetailView, mixin.TitleMixin):
+class UserDetail(DetailView, mixin.TitleMixin, mixin.MetaMixin):
     model = models.User
     context_object_name = 'profile'
     template_name = "judge/user/detail.html"
+    og_type = 'profile'
 
     def get_slug_field(self):
         return 'username'
@@ -39,13 +40,19 @@ class UserDetail(DetailView, mixin.TitleMixin):
     def get_title(self):
         return 'PNOJ: User ' + self.get_object().username
 
+    def get_description(self):
+        return self.get_object().description
+
+    def get_author(self):
+        return [self.get_object()]
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_contenttype = ContentType.objects.get_for_model(models.User)
         context['comments'] = models.Comment.objects.filter(parent_content_type=user_contenttype, parent_object_id=self.get_object().pk)
         return context
 
-class UserSubmissions(ListView, mixin.TitleMixin):
+class UserSubmissions(ListView, mixin.TitleMixin, mixin.MetaMixin):
     context_object_name = "submissions"
     template_name = 'judge/user/submission.html'
     paginate_by = 50
@@ -65,10 +72,10 @@ class UserSubmissions(ListView, mixin.TitleMixin):
         context['author'] = self.kwargs['slug']
         return context
 
-class UserEdit(UpdateView, mixin.TitleMixin):
+class UserEdit(UpdateView, mixin.TitleMixin, mixin.MetaMixin):
     template_name = 'judge/user/form.html'
     form_class = forms.ProfileUpdateForm
-    success_url = reverse_lazy('user_profile')
+    success_url = reverse_lazy('user_detail_redirect')
     title = 'PNOJ: Update Profile'
 
     def get_object(self):
