@@ -1,6 +1,4 @@
-var app = new Vue({
-    el: '#wrapper',
-    data: {
-        is_toggled: false,
-    },
+$("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
 });

@@ -1,5 +1,3 @@
-
-
 let ace_language_map = {
     "": "plain_text",
     "python3": "python",
@@ -13,7 +11,7 @@ let ace_language_map = {
     "text": "plain_text",
 };
 
-var app = new Vue({
+var submitapp = new Vue({
     el: '.submit-card',
     data: {
         language: '',
@@ -51,6 +49,7 @@ var app = new Vue({
         },
     }
 })
+
 
 // function submitSolution() {
 //     // var fileinput = document.getElementById("id_source");
