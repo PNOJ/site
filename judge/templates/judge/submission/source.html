@@ -7,22 +7,13 @@
 {% block main %}
 <div class="card">
     <div class="card-body">
-        <div class="media mb-4">
-            <div class="media-body">
-                <h5 class="mt-0">
-                    Submission {{ submission.pk|submission }} for {{ submission.problem.slug|problem }} by {{ submission.author.username|user }}
-                </h5>
-            </div>
-        </div>
+        <h5 class="card-title">
+            Submission {{ submission.pk|submission }} for {{ submission.problem.slug|problem }} by {{ submission.author.username|user }}
+        </h5>
+        <a href="{% url 'submission_detail' submission.pk %}" class="card-link">View Status</a><br><br>
         <pre class="prettyprint">{{ source }}</pre>
     </div>
 </div>
-{% endblock %}
-
-{% block navbar %}
-<li class="nav-item my-auto">
-    <a href="{% url 'submission_detail' submission.pk %}" class="btn btn-info">View Status</a>
-</li>
 {% endblock %}
 
 {% block script %}

@@ -14,24 +14,19 @@
                 {{ profile.description }}
                 {% endif %}
             </div>
+            {% if profile == user %}
+            <a href="{% url 'user_edit' %}" class="card-link">Edit profile</a>
+            {% endif %}
         </div>
     </div>
     <ul class="list-group list-group-flush">
         <li class="list-group-item">Points: {{ profile.points|floatformat }}</li>
         <li class="list-group-item">Number of Problems Solved: {{ profile.num_problems_solved }}</li>
     </ul>
+    <div class="card-body">
+        <a href="{% url 'user_submissions' profile.username %}" class="card-link">{{ profile.username }}'s Submissions</a>
     </div>
-{% endblock %}
-
-{% block navbar %}
-    {% if profile == user %}
-    <li class="nav-item ml-3 my-auto">
-        <a href="{% url 'user_edit' %}" class="btn btn-primary">Edit profile</a>
-    </li>
-    {% endif %}
-    <li class="nav-item my-auto">
-        <a href="{% url 'user_submissions' profile.username %}" class="btn btn-warning">{{ profile.username }}'s Submissions</a>
-    </li>
+</div>
 {% endblock %}
 
 {% block othermeta %}

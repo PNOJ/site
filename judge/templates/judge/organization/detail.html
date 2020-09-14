@@ -18,6 +18,9 @@
         <li class="list-group-item">Admins: {{ organization.admins.all|join:", " }}</li>
         <li class="list-group-item">Number of Members: {{ member_count }}</li>
     </ul>
+    <div class="card-body">
+        <a href="{% url 'organization_members' organization.slug %}" class="card-link">View members</a>
+    </div>
 </div>
 {% if user.is_authenticated %}
 <div class="card">
@@ -25,9 +28,11 @@
         Membership Status
     </div>
     {% if organization in user.organizations.all %}
-    <div class="card-body">
-        <p class="card-text">You are in this organization.</p>
-    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            You are in this organization.
+        </li>
+    </ul>
     {% else %}
     <ul class="list-group list-group-flush">
         {% for req in organization_requests %}
@@ -49,24 +54,19 @@
         {% endfor %}
     </ul>
     {% endif %}
+    <div class="card-body">
+        {% if user.is_authenticated %}
+        {% if organization not in user.organizations.all %}
+        {% if not organization.is_private or not organization.access_code == "" %}
+        <a href="{% url 'organization_join' organization.slug %}" class="card-link">Join organization</a>
+        {% else %}
+        <a href="{% url 'organization_request' organization.slug %}" class="card-link">Request to join</a>
+        {% endif %}
+        {% else %}
+        <a href="{% url 'organization_leave' organization.slug %}" class="card-link">Leave organization</a>
+        {% endif %}
+        {% endif %}
+    </div>
 </div>
 {% endif %}
 {% endblock %}
-
-{% block navbar %}
-<li class="nav-item ml-3 my-auto">
-    <a href="{% url 'organization_members' organization.slug %}" class="btn btn-warning">View members</a>
-    {% if user.is_authenticated %}
-    {% if organization not in user.organizations.all %}
-    {% if not organization.is_private or not organization.access_code == "" %}
-    <a href="{% url 'organization_join' organization.slug %}" class="btn btn-primary">Join organization</a>
-    {% else %}
-    <a href="{% url 'organization_request' organization.slug %}" class="btn btn-primary">Request to join</a>
-    {% endif %}
-    {% else %}
-    <a href="{% url 'organization_leave' organization.slug %}" class="btn btn-primary">Leave organization</a>
-    {% endif %}
-    {% endif %}
-</li>
-{% endblock %}
-

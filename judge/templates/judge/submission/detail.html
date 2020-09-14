@@ -76,20 +76,15 @@
         <li class="list-group-item" v-else>Memory: -</li>
     </ul>
     {% endverbatim %}
+    <div class="card-body">
+        {% if source_viewable %}
+        <a href="{% url 'submission_source' submission.pk %}" class="card-link">View Source</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a href="{% url 'problem_submit' submission.problem.slug %}" class="card-link">Re-Submit</a>
+        {% endif %}
+    </div>
 </div>
-{% endblock %}
-
-{% block navbar %}
-{% if source_viewable %}
-<li class="nav-item my-auto mx-2">
-    <a href="{% url 'submission_source' submission.pk %}" class="btn btn-info">View Source</a>
-</li>
-{% endif %}
-{% if user.is_authenticated %}
-<li class="nav-item my-auto mx-2">
-    <a href="{% url 'problem_submit' submission.problem.slug %}" class="btn btn-primary">Re-Submit</a>
-</li>
-{% endif %}
 {% endblock %}
 
 {% block script %}

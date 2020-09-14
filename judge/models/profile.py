@@ -84,7 +84,7 @@ class Organization(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('organization', args=[self.slug])
+        return reverse('organization_detail', args=[self.slug])
 
     def is_open(self):
         return not self.is_private

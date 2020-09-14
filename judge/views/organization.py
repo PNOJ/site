@@ -124,7 +124,7 @@ class OrganizationJoin(LoginRequiredMixin, FormView, mixin.TitleMixin, mixin.Met
 
 class OrganizationLeave(LoginRequiredMixin, RedirectView):
     query_string = True
-    pattern_name = 'organization'
+    pattern_name = 'organization_detail'
 
     def get_redirect_url(self, *args, **kwargs):
         organization = get_object_or_404(models.Organization, slug=kwargs['slug'])

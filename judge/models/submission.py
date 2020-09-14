@@ -35,7 +35,7 @@ class Submission(models.Model):
     language = models.CharField(max_length=10, choices=language_choices, null=True)
 
     def get_absolute_url(self):
-        return reverse('submission', args=[self.pk])
+        return reverse('submission_detail', args=[self.pk])
 
     @property
     def status_display(self):

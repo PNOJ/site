@@ -24,19 +24,18 @@
         {% if problem.problem_type.all %}
         <li class="list-group-item">Type: {{ problem.problem_type.all|join:", " }}</li>
         {% endif %}
+        <li class="list-group-item">
+            <a href="{% url 'problem_all_submissions' problem.slug %}" class="card-link">All Submissions</a>
+            <a href="{% url 'problem_best_submissions' problem.slug %}" class="card-link">Best Submissions</a>
+        </li>
     </ul>
+    <div class="card-body">
+        {% if user.is_authenticated %}
+        <a href="{% url 'problem_submit' problem.slug %}" class="btn btn-primary">Submit Solution</a>
+        {% endif %}
+    </div>
 </div>
 {% block comments %}
 {{ block.super }}
 {% endblock %}
-{% endblock %}
-
-{% block navbar %}
-{% if user.is_authenticated %}
-<li class="nav-item my-auto">
-    <a href="{% url 'problem_all_submissions' problem.slug %}" class="btn btn-warning">All Submissions</a>
-    <a href="{% url 'problem_best_submissions' problem.slug %}" class="btn btn-warning">Best Submissions</a>
-    <a href="{% url 'problem_submit' problem.slug %}" class="btn btn-primary">Submit solution</a>
-</li>
-{% endif %}
 {% endblock %}
