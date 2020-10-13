@@ -225,7 +225,7 @@ navbar = {
 
 # Meta tag settings
 
-description = 'PNOJ is a open-source online judge for competitive programmers to practice solving programming problems.'
+description = 'PNOJ is an open-source online judge for competitive programmers to practice solving programming problems.'
 keywords = [
     'PNOJ',
     'online',
