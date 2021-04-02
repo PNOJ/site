@@ -23,9 +23,9 @@ jobs:
       uses: crazy-max/ghaction-docker-meta@v2
       with:
         images: pnoj/site
-	tags: |
+        tags: |
           type=sha
-	flavor: |
+        flavor: |
           latest=auto
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
